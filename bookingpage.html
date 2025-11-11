@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Bookings - TalentConnect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f9fafb;
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    /* Header */
+    header {
+      background: #fff;
+      padding: 22px 70px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .logo-container img {
+      height: 45px;
+      width: 45px;
+      object-fit: contain;
+    }
+
+    .logo-text-left,
+    .logo-text-right {
+      font-size: 26px;
+      font-weight: 800;
+      color: #5b21b6;
+      letter-spacing: 1px;
+    }
+
+    .back-btn {
+      padding: 10px 20px;
+      background: #5b21b6;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #7c3aed;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+      font-size: 36px;
+      color: #1f2937;
+      margin-bottom: 10px;
+    }
+
+    .page-header p {
+      color: #6b7280;
+      font-size: 16px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #e5e7eb;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 14px 24px;
+      background: none;
+      border: none;
+      color: #6b7280;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: 0.3s;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      color: #5b21b6;
+      border-bottom-color: #5b21b6;
+    }
+
+    .tab:hover {
+      color: #5b21b6;
+    }
+
+    /* Booking Cards */
+    .bookings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .booking-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      transition: 0.3s;
+    }
+
+    .booking-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .booking-card-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 48px;
+    }
+
+    .booking-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .booking-card-content {
+      padding: 20px;
+    }
+
+    .booking-status {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .status-upcoming {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-cancelled {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .booking-card-content h3 {
+      color: #1f2937;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .booking-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .booking-meta i {
+      color: #5b21b6;
+      width: 18px;
+    }
+
+    .booking-id {
+      background: #f3f4f6;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #6b7280;
+      font-family: monospace;
+      margin-top: 12px;
+    }
+
+    .booking-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+      flex: 1;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: #5b21b6;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #7c3aed;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .btn-danger:hover {
+      background: #fecaca;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-state i {
+      font-size: 72px;
+      color: #d1d5db;
+      margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+      color: #1f2937;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        padding: 15px 20px;
+      }
+
+      .logo-text-left,
+      .logo-text-right {
+        font-size: 20px;
+      }
+
+      .logo-container img {
+        height: 35px;
+        width: 35px;
+      }
+
+      .page-header h1 {
+        font-size: 28px;
+      }
+
+      .tabs {
+        gap: 8px;
+      }
+
+      .tab {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container" onclick="goHome()">
+      <span class="logo-text-left">TALENT</span>
+      <img src="logo.png" alt="TalentConnect Logo" />
+      <span class="logo-text-right">CONNECT</span>
+    </div>
+    <button class="back-btn" onclick="goBack()">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </button>
+  </header>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>My Bookings</h1>
+      <p>View and manage all your event bookings</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="filterBookings('all')">
+        <i class="fas fa-list"></i> All Bookings
+      </button>
+      <button class="tab" onclick="filterBookings('upcoming')">
+        <i class="fas fa-clock"></i> Upcoming
+      </button>
+      <button class="tab" onclick="filterBookings('completed')">
+        <i class="fas fa-check-circle"></i> Completed
+      </button>
+      <button class="tab" onclick="filterBookings('cancelled')">
+        <i class="fas fa-times-circle"></i> Cancelled
+      </button>
+    </div>
+
+    <div id="bookingsContainer">
+      <div class="loading">
+        <i class="fas fa-spinner"></i>
+        <p>Loading your bookings...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBE5yRL0Vx6a1asXMMioEr3t9Ah2w3QxtM",
+      authDomain: "talent-f474d.firebaseapp.com",
+      projectId: "talent-f474d",
+      storageBucket: "talent-f474d.firebasestorage.app",
+      messagingSenderId: "826760976811",
+      appId: "1:826760976811:web:34c70fe2619bd047885aee",
+      measurementId: "G-7L12448Y3H",
+      databaseURL: "https://talent-f474d-default-rtdb.firebaseio.com"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    let allBookings = [];
+    let currentFilter = 'all';
+    let currentUser = null;
+
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        currentUser = user;
+        await loadBookings(user.uid);
+      } else {
+        window.location.href = 'login.html';
+      }
+    });
+
+    async function loadBookings(uid) {
+      try {
+        const snapshot = await db.ref(`bookings/${uid}`).once('value');
+        const bookingsData = snapshot.val();
+
+        if (bookingsData) {
+          allBookings = Object.entries(bookingsData).map(([id, booking]) => ({
+            id,
+            ...booking
+          }));
+
+          allBookings.sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
+        } else {
+          allBookings = [];
+        }
+
+        displayBookings(allBookings);
+
+      } catch (error) {
+        console.error('Error loading bookings:', error);
+        displayError();
+      }
+    }
+
+    function displayBookings(bookings) {
+      const container = document.getElementById('bookingsContainer');
+
+      if (bookings.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-calendar-times"></i>
+            <h3>No Bookings Yet</h3>
+            <p>You haven't booked any events yet. Start exploring amazing events!</p>
+          </div>
+        `;
+        return;
+      }
+
+      const bookingsHTML = bookings.map(booking => {
+        const status = getBookingStatus(booking);
+        const statusClass = status.toLowerCase();
+
+        return `
+          <div class="booking-card">
+            <div class="booking-card-image">
+              ${booking.eventImage ? `<img src="${booking.eventImage}" alt="${booking.eventTitle}" />` : '<i class="fas fa-calendar-alt"></i>'}
+            </div>
+            <div class="booking-card-content">
+              <span class="booking-status status-${statusClass}">${status}</span>
+              <h3>${booking.eventTitle || 'Event'}</h3>
+              <div class="booking-meta">
+                <i class="fas fa-calendar-alt"></i>
+                <span>${booking.eventDate || 'Date TBA'}</span>
+              </div>
+              <div class="booking-meta">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>${booking.eventLocation || 'Location TBA'}</span>
+              </div>
+              <div class="booking-meta">
+                <i class="fas fa-ticket-alt"></i>
+                <span>${booking.tickets || 1} Ticket(s)</span>
+              </div>
+              <div class="booking-id">
+                Booking ID: ${booking.id.substring(0, 12)}...
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `<div class="bookings-grid">${bookingsHTML}</div>`;
+    }
+
+    function getBookingStatus(booking) {
+      if (booking.status === 'cancelled') return 'Cancelled';
+
+      const eventDate = new Date(booking.eventDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (eventDate < today) return 'Completed';
+      return 'Upcoming';
+    }
+
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

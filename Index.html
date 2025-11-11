@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TalentConnect — Plan Your Event, Hassle Free</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+    body{color:#111;background:#fff;line-height:1.6;}
+
+    /* Navbar */
+    header{
+      position:fixed;top:0;left:0;width:100%;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:22px 70px;background:#fff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.08);z-index:1100;
+    }
+    .logo-container{display:flex;align-items:center;gap:8px;cursor:pointer;}
+    .logo-container img{
+      width:50px;height:50px;object-fit:contain;
+      transition: all 0.3s ease;
+    }
+    @media (max-width: 1024px) {
+      .logo-container img{width:42px;height:42px;}
+      .logo-text{font-size:22px;}
+    }
+    @media (max-width: 768px) {
+      .logo-container img{width:36px;height:36px;}
+      .logo-text{font-size:19px;}
+      .logo-container{gap:6px;}
+    }
+    @media (max-width: 480px) {
+      .logo-container img{width:30px;height:30px;}
+      .logo-text{font-size:17px;}
+      .logo-container{gap:5px;}
+    }
+    .logo-text{color:#5b21b6;font-weight:800;font-size:26px;text-transform:uppercase;letter-spacing:1px;}
+    nav a{
+      margin:0 20px;text-decoration:none;color:#333;
+      font-weight:600;font-size:17px;padding:10px 6px;transition:0.2s;
+      font-family:'Inter','Segoe UI',sans-serif;letter-spacing:0.3px;
+    }
+    nav a:hover{color:#5b21b6;}
+    nav a.active{color:#5b21b6;border-bottom:3px solid #5b21b6;padding-bottom:6px;}
+    
+    /* Mobile Menu Toggle */
+    .menu-toggle{display:none;background:none;border:none;cursor:pointer;padding:8px;z-index:1200;}
+    .menu-toggle span{display:block;width:28px;height:3px;background:#5b21b6;margin:5px 0;transition:0.3s;border-radius:3px;}
+    .menu-toggle.active span:nth-child(1){transform:rotate(45deg) translate(8px, 8px);}
+    .menu-toggle.active span:nth-child(2){opacity:0;}
+    .menu-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(7px, -7px);}
+    .auth{display:flex;align-items:center;gap:12px;}
+    .auth button{
+      padding:12px 22px;border-radius:999px;border:none;font-weight:700;
+      cursor:pointer;font-size:16px;transition:0.2s;
+    }
+    .auth .login{background:transparent;border:2px solid #5b21b6;color:#5b21b6;}
+    .auth .login:hover{background:#5b21b6;color:#fff;}
+    .auth .signup{background:#f97316;color:#fff;border:2px solid #f97316;}
+    .auth .signup:hover{background:#ea580c;}
+    .user-welcome{
+      display:none;
+      align-items:center;
+      gap:10px;
+      padding:10px 18px;
+      background:#f3e8ff;
+      border-radius:999px;
+      color:#5b21b6;
+      font-weight:600;
+      font-size:15px;
+      cursor:pointer;
+      position:relative;
+      transition:background 0.3s;
+    }
+    .user-welcome:hover{background:#e9d5ff;}
+    .user-welcome.active{display:flex;}
+    .user-welcome i{font-size:18px;}
+    
+    /* User Dropdown Menu */
+    .user-dropdown{
+      position:absolute;
+      top:calc(100% + 10px);
+      right:0;
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 10px 40px rgba(0,0,0,0.15);
+      min-width:220px;
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(-10px);
+      transition:all 0.3s;
+      z-index:1000;
+    }
+    .user-dropdown.active{opacity:1;visibility:visible;transform:translateY(0);}
+    .user-dropdown-header{
+      padding:16px 18px;
+      border-bottom:1px solid #f3f4f6;
+    }
+    .user-dropdown-header h4{color:#1f2937;font-size:16px;margin-bottom:4px;}
+    .user-dropdown-header p{color:#6b7280;font-size:13px;}
+    .user-dropdown-menu{padding:8px 0;}
+    .user-dropdown-item{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px 18px;
+      color:#374151;
+      text-decoration:none;
+      transition:background 0.2s;
+      cursor:pointer;
+    }
+    .user-dropdown-item:hover{background:#f9fafb;}
+    .user-dropdown-item i{font-size:16px;color:#5b21b6;width:20px;}
+    .user-dropdown-divider{height:1px;background:#f3f4f6;margin:8px 0;}
+    .user-dropdown-item.danger{color:#ef4444;}
+    .user-dropdown-item.danger i{color:#ef4444;}
+
+    /* Carousel */
+    .carousel{position:relative;margin-top:100px;height:78vh;overflow:hidden;}
+    .carousel-slide{position:absolute;inset:0;display:flex;flex-direction:column;
+      justify-content:center;align-items:center;text-align:center;padding:0 20px;
+      background-size:cover;background-position:center;color:#fff;opacity:0;transition:opacity .9s ease;}
+    .carousel-slide.active{opacity:1;}
+    .carousel-slide::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.45);}
+    .carousel-content{position:relative;z-index:2;max-width:920px;padding:20px;}
+    .carousel-content h1{font-size:46px;margin-bottom:14px;font-weight:900;text-shadow:0 6px 30px rgba(0,0,0,0.4);}
+    .carousel-content p{max-width:850px;font-size:20px;text-shadow:0 6px 18px rgba(0,0,0,0.35);}
+    .carousel-dots{position:absolute;bottom:24px;left:0;right:0;display:flex;justify-content:center;gap:10px;z-index:50;}
+    .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.45);cursor:pointer;border:2px solid rgba(255,255,255,0.12);}
+    .dot.active{background:#fff;}
+
+    /* Detect Location Section */
+    .detect-section{background:#f9fafb;text-align:center;padding:70px 20px;}
+    .detect-section h2{font-size:30px;color:#5b21b6;margin-bottom:25px;font-weight:800;}
+    .search-box{display:flex;justify-content:center;gap:10px;background:#fff;border-radius:50px;
+      padding:6px 10px;max-width:760px;margin:0 auto;box-shadow:0 6px 25px rgba(0,0,0,0.1);}
+    .search-box input{flex:1;padding:14px 18px;border-radius:50px;border:none;outline:none;font-size:16px;background:#f3f4f6;}
+    .search-box button{padding:13px 22px;border-radius:999px;border:none;font-weight:700;cursor:pointer;}
+    .detect-btn{background:#f97316;color:#fff;}
+    .find-btn{background:#5b21b6;color:#fff;}
+
+    /* Section Styles */
+    section{padding:70px 40px;}
+    h2{font-size:30px;text-align:center;margin-bottom:8px;}
+    .section-desc{text-align:center;color:#666;max-width:900px;margin:0 auto 36px;}
+
+    /* Event Cards */
+    .event-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:20px;}
+    .event-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.06);display:flex;flex-direction:column;}
+    .event-card img{width:100%;height:200px;object-fit:cover;}
+    .event-card-content{padding:18px;flex:1;display:flex;flex-direction:column;gap:10px;}
+    .event-card-content h3{margin:0 0 8px;color:#1f2937;}
+    .event-meta{color:#6b7280;font-size:13px;display:flex;gap:10px;align-items:center;}
+    .btn-book{background:#5b21b6;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;cursor:pointer;width:100%;}
+
+    /* About + Features Grid - FIXED FOR 3 COLUMNS */
+    .AboutUs-grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:22px;
+      margin-top:36px;
+      max-width:1200px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    .feature-card{background:#fff;padding:24px;border-radius:14px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.06);}
+    .feature-icon{font-size:34px;color:#5b21b6;margin-bottom:14px;}
+    .feature-card h3{color:#5b21b6;margin-bottom:10px;font-weight:700;}
+    .feature-card p{color:#444;font-size:15px;}
+
+    /* How it Works */
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;margin-top:40px;}
+    .step{background:#fff;padding:22px;border-radius:12px;text-align:center;box-shadow:0 6px 25px rgba(0,0,0,0.05);}
+    .step-icon{font-size:28px;color:#5b21b6;margin-bottom:8px;}
+    .step h3{color:#1f2937;margin-bottom:6px;}
+
+    /* Footer */
+    footer{background:#5b21b6;color:#fff;padding:54px 40px;}
+    footer .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;}
+    footer a{color:#fff;text-decoration:none;display:block;margin-bottom:8px;opacity:0.95;}
+    footer a:hover{text-decoration:underline;opacity:1;}
+    footer p{text-align:center;margin-top:18px;opacity:0.9;}
+
+    /* Notifications */
+    .notification{position:fixed;top:110px;right:20px;background:#fff;padding:14px 18px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.12);transform:translateX(300px);transition:transform .25s;}
+    .notification.show{transform:translateX(0);}
+    .notification.success{border-left:4px solid #10b981;}
+    .notification.error{border-left:4px solid #ef4444;}
+
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      header{padding:18px 40px;}
+      .carousel{height:60vh;margin-top:90px;}
+      .carousel-content h1{font-size:38px;}
+      .carousel-content p{font-size:18px;}
+      
+      /* Keep 3 columns on tablets */
+      .AboutUs-grid{
+        grid-template-columns:repeat(3, 1fr);
+        gap:18px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header{padding:15px 20px;flex-wrap:wrap;gap:15px;}
+      
+      .menu-toggle{display:block;}
+      
+      nav{
+        order:3;width:100%;max-height:0;overflow:hidden;
+        flex-direction:column;background:#fff;
+        transition:max-height 0.3s ease;position:absolute;
+        top:80px;left:0;right:0;box-shadow:0 4px 15px rgba(0,0,0,0.1);
+      }
+      nav.active{max-height:400px;padding:20px 0;}
+      nav a{
+        margin:0;font-size:16px;padding:12px 20px;
+        width:100%;text-align:left;border-bottom:1px solid #f3f4f6;
+      }
+      nav a.active{border-bottom:1px solid #5b21b6;border-left:4px solid #5b21b6;}
+      nav a:hover{background:#f9fafb;}
+      
+      .auth{order:2;gap:8px;}
+      .auth button{padding:10px 18px;font-size:14px;}
+      .user-welcome{padding:8px 14px;font-size:14px;}
+      .user-dropdown{right:20px;min-width:200px;}
+      
+      .carousel{height:50vh;margin-top:140px;}
+      .carousel-content h1{font-size:32px;}
+      .carousel-content p{font-size:16px;max-width:90%;}
+      
+      .detect-section{padding:50px 20px;}
+      .detect-section h2{font-size:24px;}
+      .search-box{flex-direction:column;padding:12px;max-width:90%;}
+      .search-box input{padding:12px 16px;}
+      .search-box button{padding:12px 20px;}
+      
+      section{padding:50px 20px;}
+      h2{font-size:26px;}
+      .section-desc{font-size:15px;}
+      
+      .event-cards{grid-template-columns:1fr;gap:20px;}
+      
+      /* 3 columns on mobile for features */
+      .AboutUs-grid{
+        grid-template-columns:repeat(3, 1fr);
+        gap:12px;
+      }
+      .feature-card{padding:16px;}
+      .feature-icon{font-size:26px;margin-bottom:8px;}
+      .feature-card h3{font-size:14px;margin-bottom:6px;}
+      .feature-card p{font-size:12px;}
+      
+      .steps{grid-template-columns:1fr;gap:20px;}
+      
+      footer{padding:40px 20px;}
+      footer .grid{grid-template-columns:1fr;gap:20px;}
+      
+      .notification{top:90px;right:10px;left:10px;max-width:calc(100% - 20px);}
+    }
+
+    @media (max-width: 480px) {
+      
+      nav a{font-size:14px;}
+      
+      .auth{flex-direction:column;width:100%;order:2;}
+      .auth button{width:100%;padding:10px;}
+      .user-welcome{width:100%;justify-content:center;}
+      
+      .carousel{height:45vh;}
+      .carousel-content h1{font-size:26px;}
+      .carousel-content p{font-size:14px;}
+      
+      .detect-section h2{font-size:22px;}
+      .search-box button{font-size:14px;}
+      
+      h2{font-size:24px;}
+      .event-card-content h3{font-size:18px;}
+      .step h3{font-size:16px;}
+      
+      /* Still 3 columns even on smallest screens */
+      .AboutUs-grid{
+        grid-template-columns:repeat(3, 1fr);
+        gap:10px;
+      }
+      .feature-card{padding:12px;}
+      .feature-icon{font-size:22px;margin-bottom:6px;}
+      .feature-card h3{font-size:12px;margin-bottom:4px;}
+      .feature-card p{font-size:11px;line-height:1.4;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    
+    <div class="logo-container" onclick="scrollToTop()">
+      <span class="logo-text">Talent</span>
+      <img src="logo.png" alt="TalentConnect Logo" />
+      <span class="logo-text">Connect</span>
+    </div>
+    
+    <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <nav id="navMenu">
+      <a href="Index.html" id="nav-home">Home</a>
+      <a href="browseevent.html" id="nav-browse">Browse Events</a>
+      <a href="aboutus.html" id="nav-about">About</a>
+      <a href="contact.html" id="nav-contact">Contact</a>
+      <a href="host_event.html" id="nav-host">Host Event</a>
+    </nav>
+    
+    <div class="auth">
+      <!-- Logged out state -->
+      <button class="login" id="loginBtn" onclick="handleLogin()">Login</button>
+      <button class="signup" id="signupBtn" onclick="handleSignup()">Sign Up</button>
+      
+      <!-- Logged in state -->
+      <div class="user-welcome" id="userWelcome" onclick="toggleUserDropdown()">
+        <i class="fas fa-user-circle"></i>
+        <span id="userName">Welcome</span>
+        <i class="fas fa-chevron-down" style="font-size:12px;"></i>
+        
+        <!-- User Dropdown -->
+        <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
+          <div class="user-dropdown-header">
+            <h4 id="dropdownName">User Name</h4>
+            <p id="dropdownEmail">user@email.com</p>
+          </div>
+          <div class="user-dropdown-menu">
+            <a href="profile.html" class="user-dropdown-item">
+              <i class="fas fa-user"></i>
+              <span>My Profile</span>
+            </a>
+            <a href="bookingpage.html" class="user-dropdown-item">
+              <i class="fas fa-ticket-alt"></i>
+              <span>My Bookings</span>
+            </a>
+            <div class="user-dropdown-divider"></div>
+            <a href="#" class="user-dropdown-item danger" onclick="handleLogout()">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Carousel -->
+  <div class="carousel" id="heroCarousel">
+    <div class="carousel-slide active" style="background-image:url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1800&auto=format&fit=crop');">
+      <div class="carousel-content">
+        <h1>Discover, Book & Experience Events Effortlessly</h1>
+        <p>Join thousands who trust TalentConnect to find and host incredible experiences.</p>
+      </div>
+    </div>
+    <div class="carousel-slide" style="background-image:url('https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=1800&auto=format&fit=crop');">
+      <div class="carousel-content">
+        <h1>Easy Booking. Seamless Payments.</h1>
+        <p>Book concerts, workshops, and entertainment with just one click.</p>
+      </div>
+    </div>
+    <div class="carousel-slide" style="background-image:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1800&auto=format&fit=crop');">
+      <div class="carousel-content">
+        <h1>Host With Confidence</h1>
+        <p>Create, promote, and manage your event — all in one platform.</p>
+      </div>
+    </div>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </div>
+
+  <!-- Detect My Location Section -->
+  <section class="detect-section">
+    <h2>Find Events Happening Near You</h2>
+    <div class="search-box">
+      <input id="locationSearch" placeholder="Find events near you...">
+      <button class="detect-btn" onclick="detectUserCity()">📍 Detect Location</button>
+      <button class="find-btn" onclick="searchEvents()">Find Events</button>
+    </div>
+  </section>
+
+  <!-- Events Section -->
+  <section>
+    <h2>Events Near You</h2>
+    <p class="section-desc">Hot events happening right now. Don't miss out — filter by city or event name.</p>
+    <div id="eventCards" class="event-cards"></div>
+  </section>
+
+  <!-- Features Section -->
+  <section style="background:#f9fafb;">
+    <h2>Everything You Need to Host & Discover <span style="color:#5b21b6;">Events</span></h2>
+    <p class="section-desc">Whether you're hosting a concert or looking for your next adventure, we've got you covered with powerful tools and seamless experiences.</p>
+    <div class="AboutUs-grid">
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-calendar-plus"></i></div><h3>Easy Event Creation</h3><p>Create and publish your event in minutes with our intuitive event builder.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-bullhorn"></i></div><h3>Built-in Promotion</h3><p>Your events get promoted to the right audience automatically.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-users"></i></div><h3>Reach Your Audience</h3><p>Connect with thousands of potential attendees in your local community.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-shield-alt"></i></div><h3>Booking Protection</h3><p>Both hosts and attendees are protected with our booking guarantee.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-credit-card"></i></div><h3>Secure Payments</h3><p>We handle all payments securely, so you can focus on your event.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-bolt"></i></div><h3>Instant Bookings</h3><p>Customers can book and pay instantly with just a few clicks.</p></div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section>
+    <h2>How <span style="color:#5b21b6;">It Works</span></h2>
+    <p class="section-desc">Simple steps to find and book the perfect event for you</p>
+    <div class="steps">
+      <div class="step"><div class="step-icon"><i class="fas fa-search"></i></div><h3>1. Search</h3><p>Browse events by location, date, and category to find what interests you.</p></div>
+      <div class="step"><div class="step-icon"><i class="fas fa-check-circle"></i></div><h3>2. Select</h3><p>Choose from a variety of events that match your preferences and budget.</p></div>
+      <div class="step"><div class="step-icon"><i class="fas fa-credit-card"></i></div><h3>3. Book & Pay</h3><p>Secure your spot with our trusted payment system.</p></div>
+      <div class="step"><div class="step-icon"><i class="fas fa-smile"></i></div><h3>4. Enjoy</h3><p>Attend the event and create unforgettable memories.</p></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="grid">
+      <div><h3>TalentConnect</h3><p>Where talent meets opportunity</p></div>
+      <div><h4>For Event Hosts</h4><a href="host_event.html">Create an Event</a><a href="#">Getting Started Guide</a><a href="#">Pricing</a></div>
+      <div><h4>For Attendees</h4><a href="browseevent.html">Browse Events</a><a href="#">My Tickets</a><a href="#">Event Calendar</a></div>
+      <div><h4>Support</h4><a href="contact.html">Contact Us</a><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+    <p>© 2025 TalentConnect. All rights reserved.</p>
+  </footer>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBE5yRL0Vx6a1asXMMioEr3t9Ah2w3QxtM",
+      authDomain: "talent-f474d.firebaseapp.com",
+      databaseURL: "https://talent-f474d-default-rtdb.firebaseio.com",
+      projectId: "talent-f474d",
+      storageBucket: "talent-f474d.firebasestorage.app",
+      messagingSenderId: "826760976811",
+      appId: "1:826760976811:web:34c70fe2619bd047885aee",
+      measurementId: "G-7L12448Y3H"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    
+    // Auth State Observer - MODIFIED TO ALLOW GUEST ACCESS
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          // Fetch user data from database
+          const snapshot = await db.ref(`users/${user.uid}`).once('value');
+          const userData = snapshot.val();
+          
+          if (!userData) {
+            // User exists in Auth but not in database - sign them out
+            await auth.signOut();
+            showGuestUI();
+            return;
+          }
+          
+          // Check if user is an organizer (should not be on index.html)
+          if (userData.userType === 'organizer') {
+            window.location.href = 'organizerdashboard.html';
+            return;
+          }
+          
+          // Show logged-in UI
+          showLoggedInUI(userData);
+          
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          await auth.signOut();
+          showGuestUI();
+        }
+      } else {
+        // No user logged in - show guest UI (not redirecting)
+        showGuestUI();
+      }
+    });
+    
+    // Show UI for logged-in users
+    function showLoggedInUI(userData) {
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('signupBtn').style.display = 'none';
+      document.getElementById('userWelcome').classList.add('active');
+      document.getElementById('userName').textContent = userData.name;
+      
+      // Update dropdown info
+      document.getElementById('dropdownName').textContent = userData.name;
+      document.getElementById('dropdownEmail').textContent = userData.email;
+    }
+    
+    // Show UI for guest users (not logged in)
+    function showGuestUI() {
+      document.getElementById('loginBtn').style.display = 'inline-block';
+      document.getElementById('signupBtn').style.display = 'inline-block';
+      document.getElementById('userWelcome').classList.remove('active');
+    }
+    
+    // Initialize page
+    document.addEventListener("DOMContentLoaded", () => {
+      const path = window.location.pathname.split("/").pop().toLowerCase();
+      if (path.includes("browse")) document.getElementById("nav-browse").classList.add("active");
+      else if (path.includes("about")) document.getElementById("nav-about").classList.add("active");
+      else if (path.includes("contact")) document.getElementById("nav-contact").classList.add("active");
+      else if (path.includes("host")) document.getElementById("nav-host").classList.add("active");
+      else document.getElementById("nav-home").classList.add("active");
+      
+      initCarousel();
+      
+      const saved = localStorage.getItem('userCity');
+      if (saved && saved !== 'Unknown') {
+        document.getElementById('locationSearch').value = saved;
+        loadEvents(saved);
+      } else {
+        loadEvents();
+      }
+    });
+    
+    // Logout Handler
+    async function handleLogout() {
+      try {
+        await auth.signOut();
+        showNotification('Logged out successfully', 'success');
+        showGuestUI();
+      } catch (error) {
+        console.error('Logout error:', error);
+        showNotification('Error logging out', 'error');
+      }
+    }
+    
+    function showNotification(m, t = 'success') {
+      const e = document.querySelector('.notification');
+      if (e) e.remove();
+      const n = document.createElement('div');
+      n.className = `notification ${t}`;
+      n.innerHTML = `<strong>${m}</strong>`;
+      document.body.appendChild(n);
+      setTimeout(() => n.classList.add('show'), 80);
+      setTimeout(() => {
+        n.classList.remove('show');
+        setTimeout(() => n.remove(), 300);
+      }, 3000);
+    }
+    
+    let slideIndex = 0, slides = [], carouselInterval = null;
+    
+    function initCarousel() {
+      slides = Array.from(document.querySelectorAll('.carousel-slide'));
+      const dots = document.getElementById('carouselDots');
+      dots.innerHTML = '';
+      slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.onclick = () => goToSlide(i);
+        dots.appendChild(dot);
+      });
+      showSlide(0);
+      carouselInterval = setInterval(() => nextSlide(), 5000);
+    }
+    
+    function showSlide(n) {
+      slides.forEach((s, i) => s.classList.toggle('active', i === n));
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n));
+      slideIndex = n;
+    }
+    
+    function nextSlide() {
+      showSlide((slideIndex + 1) % slides.length);
+    }
+    
+    function goToSlide(i) {
+      showSlide(i);
+      clearInterval(carouselInterval);
+      carouselInterval = setInterval(() => nextSlide(), 5000);
+    }
+    
+    async function detectUserCity() {
+      if (!navigator.geolocation) return showNotification('Geolocation not supported', 'error');
+      showNotification('Detecting your location...', 'success');
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        try {
+          const lat = pos.coords.latitude, lon = pos.coords.longitude;
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+          const data = await res.json();
+          const addr = data.address || {};
+          let city = (addr.city || addr.town || addr.village || addr.county || addr.state || '').trim();
+          const map = ['pinjore', 'panchkula', 'mohali', 'tricity'];
+          if (map.some(m => city.toLowerCase().includes(m))) city = 'Chandigarh';
+          if (!city) city = addr.county || addr.state || 'Unknown';
+          document.getElementById('locationSearch').value = city;
+          localStorage.setItem('userCity', city);
+          showNotification(`Location detected: ${city}`, 'success');
+          loadEvents(city);
+        } catch {
+          showNotification('Unable to detect city', 'error');
+        }
+      }, () => showNotification('Location permission denied', 'error'), { timeout: 10000 });
+    }
+    
+    function createEventCard(ev) {
+      const img = ev.image || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1400&auto=format&fit=crop';
+      return `<div class='event-card'><img src='${img}'/><div class='event-card-content'><h3>${ev.title || 'Untitled Event'}</h3><div class='event-meta'><i class='fas fa-calendar-alt'></i><span>${ev.date || 'TBA'}</span></div><div class='event-meta'><i class='fas fa-map-marker-alt'></i><span>${ev.location || 'Unknown'}</span></div><p>${ev.description || ''}</p><button class='btn-book' onclick='bookEvent("${encodeURIComponent(ev.title || 'Event')}")'>Book Now</button></div></div>`;
+    }
+    
+    function loadEvents(f = null) {
+      const c = document.getElementById('eventCards');
+      c.innerHTML = '<p style="text-align:center;color:#5b21b6">Loading events...</p>';
+      db.ref('events').once('value').then(s => {
+        const v = s.val();
+        if (!v) return c.innerHTML = '<p style="text-align:center;">No events available.</p>';
+        let r = Object.values(v).reverse();
+        if (f) {
+          const x = f.toLowerCase();
+          r = r.filter(e => (e.location || '').toLowerCase().includes(x) || (e.title || '').toLowerCase().includes(x));
+        }
+        c.innerHTML = r.length ? r.map(createEventCard).join('') : '<p style="text-align:center;">No events found.</p>';
+      }).catch(() => c.innerHTML = '<p style="text-align:center;">Failed to load events.</p>');
+    }
+    
+    function searchEvents() {
+      const t = document.getElementById('locationSearch').value.trim();
+      if (!t) return showNotification('Enter a city or event name', 'error');
+      loadEvents(t);
+    }
+    
+    function bookEvent(t) {
+      const user = auth.currentUser;
+      if (!user) {
+        showNotification('Please login to book events', 'error');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1500);
+        return;
+      }
+      showNotification(`Booking initiated for "${decodeURIComponent(t)}"`, 'success');
+    }
+    
+    function handleLogin() {
+      window.location.href = 'login.html';
+    }
+    
+    function handleSignup() {
+      window.location.href = 'login.html';
+    }
+    
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // Mobile Menu Toggle
+    function toggleMenu() {
+      const navMenu = document.getElementById('navMenu');
+      const menuToggle = document.getElementById('menuToggle');
+      navMenu.classList.toggle('active');
+      menuToggle.classList.toggle('active');
+    }
+    
+    // User Dropdown Toggle
+    function toggleUserDropdown() {
+      const dropdown = document.getElementById('userDropdown');
+      dropdown.classList.toggle('active');
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('userDropdown');
+      const userWelcome = document.getElementById('userWelcome');
+      if (dropdown && userWelcome && !userWelcome.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
+    
+    // Close menu when clicking on a link
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+            const navMenu = document.getElementById('navMenu');
+            const menuToggle = document.getElementById('menuToggle');
+            navMenu.classList.remove('active');
+            menuToggle.classList.remove('active');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

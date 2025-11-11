@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - TalentConnect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+    body {background:#f9fafb; color:#333; line-height:1.6;}
+    
+    .auth-hero {
+      background: linear-gradient(rgba(91,33,182,0.85), rgba(91,33,182,0.85)), url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop') no-repeat center/cover;
+      height: 30vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; color: #fff; padding: 0 20px;
+    }
+    .auth-hero h1 {font-size: 36px; font-weight: 800; margin-bottom: 15px;}
+    .auth-hero p {margin: 20px 0; font-size: 18px; max-width: 700px;}
+
+    .auth-container {display: flex; justify-content: center; align-items: center; padding: 50px 20px; min-height: 70vh;}
+    .auth-box {background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 40px; width: 100%; max-width: 450px;}
+    .auth-tabs {display: flex; margin-bottom: 30px; border-bottom: 2px solid #eee;}
+    .auth-tab {padding: 15px 25px; font-size: 18px; font-weight: 600; color: #666; text-align: center; flex: 1; cursor: pointer; transition: all 0.3s;}
+    .auth-tab.active {color: #5b21b6; border-bottom: 3px solid #5b21b6;}
+    .auth-form {display: none;}
+    .auth-form.active {display: block;}
+    .auth-form h2 {font-size: 28px; margin-bottom: 25px; color: #5b21b6; text-align: center;}
+    .form-group {margin-bottom: 20px;}
+    .form-group label {display: block; margin-bottom: 8px; font-weight: 500; color: #333;}
+    .form-group input, .form-group select {width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; transition: border-color 0.3s;}
+    .form-group input:focus, .form-group select:focus {outline: none; border-color: #5b21b6;}
+    .password-input {position: relative;}
+    .toggle-password {position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666; cursor: pointer;}
+    .forgot-password {display: block; text-align: right; margin-bottom: 25px; color: #5b21b6; text-decoration: none; font-weight: 500;}
+    .forgot-password:hover {text-decoration: underline;}
+    .auth-submit {background: #5b21b6; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; width: 100%; margin-bottom: 20px;}
+    .auth-submit:hover {background: #7c3aed;}
+    .auth-submit:disabled {background: #ccc; cursor: not-allowed;}
+    .auth-switch {text-align: center; margin-top: 25px; color: #666;}
+    .auth-switch a {color: #5b21b6; text-decoration: none; font-weight: 600; cursor: pointer;}
+    .auth-switch a:hover {text-decoration: underline;}
+
+    .password-strength {margin-top: 8px; height: 4px; border-radius: 2px; background: #ddd; overflow: hidden;}
+    .password-strength-bar {height: 100%; transition: all 0.3s;}
+    .password-strength-text {font-size: 12px; margin-top: 5px; font-weight: 500;}
+    .strength-weak {color: #ef4444;}
+    .strength-medium {color: #f59e0b;}
+    .strength-strong {color: #10b981;}
+
+    .remember-me {display: flex; align-items: center; margin-bottom: 20px;}
+    .remember-me input {width: auto; margin-right: 8px;}
+
+    .custom-dialog {position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;}
+    .custom-dialog.active {display: flex;}
+    .dialog-content {background: white; border-radius: 12px; padding: 30px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideIn 0.3s ease;}
+    @keyframes slideIn {from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;}}
+    .dialog-icon {font-size: 50px; margin-bottom: 20px;}
+    .dialog-icon.success {color: #10b981;}
+    .dialog-icon.error {color: #ef4444;}
+    .dialog-icon.info {color: #5b21b6;}
+    .dialog-title {font-size: 24px; margin-bottom: 15px; color: #5b21b6;}
+    .dialog-message {margin-bottom: 25px; color: #666;}
+    .dialog-buttons {display: flex; gap: 10px; justify-content: center;}
+    .dialog-button {padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;}
+    .dialog-button.primary {background: #5b21b6; color: white;}
+    .dialog-button.primary:hover {background: #7c3aed;}
+    .dialog-button.secondary {background: #e5e7eb; color: #333;}
+    .dialog-button.secondary:hover {background: #d1d5db;}
+
+    @media (max-width: 768px) {.auth-hero{height:auto;padding:60px 20px;} .auth-container{padding:40px 20px;}}
+  </style>
+</head>
+<body>
+  <section class="auth-hero">
+    <h1>Welcome to TalentConnect</h1>
+    <p>Sign in to access your account and manage your events</p>
+  </section>
+
+  <section class="auth-container">
+    <div class="auth-box">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="loginTab">Login</div>
+        <div class="auth-tab" id="signupTab">Sign Up</div>
+      </div>
+      
+      <!-- Login Form -->
+      <form class="auth-form active" id="loginForm">
+        <h2>Sign In to Your Account</h2>
+        
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="Your email address" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="password-input">
+            <input type="password" id="loginPassword" placeholder="Your password" required>
+            <span class="toggle-password" onclick="togglePassword('loginPassword')">
+              <i class="far fa-eye"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loginUserType">Login As</label>
+          <select id="loginUserType" required>
+            <option value="">Select user type</option>
+            <option value="customer">Customer</option>
+            <option value="organiser">Event Organiser</option>
+          </select>
+        </div>
+
+        <div class="remember-me">
+          <input type="checkbox" id="rememberMe">
+          <label for="rememberMe" style="margin-bottom: 0;">Remember me</label>
+        </div>
+        
+        <a href="#" class="forgot-password" id="forgotPasswordLink">Forgot password?</a>
+        <button type="submit" class="auth-submit">Sign In</button>
+        <div class="auth-switch">Don't have an account? <a id="switchToSignup">Sign up now</a></div>
+      </form>
+      
+      <!-- Signup Form -->
+      <form class="auth-form" id="signupForm">
+        <h2>Create Your Account</h2>
+        
+        <div class="form-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" placeholder="Your full name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="signupEmail">Email Address</label>
+          <input type="email" id="signupEmail" placeholder="Your email address" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <div class="password-input">
+            <input type="password" id="signupPassword" placeholder="Create a password (min 8 characters)" required minlength="8">
+            <span class="toggle-password" onclick="togglePassword('signupPassword')">
+              <i class="far fa-eye"></i>
+            </span>
+          </div>
+          <div class="password-strength">
+            <div class="password-strength-bar" id="strengthBar"></div>
+          </div>
+          <div class="password-strength-text" id="strengthText"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="password-input">
+            <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+            <span class="toggle-password" onclick="togglePassword('confirmPassword')">
+              <i class="far fa-eye"></i>
+            </span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="signupUserType">Register As</label>
+          <select id="signupUserType" required>
+            <option value="">Select user type</option>
+            <option value="customer">Customer</option>
+            <option value="organiser">Event Organiser</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="auth-submit">Create Account</button>
+        <div class="auth-switch">Already have an account? <a id="switchToLogin">Sign in</a></div>
+      </form>
+
+      <!-- Forgot Password Form -->
+      <form class="auth-form" id="forgotPasswordForm">
+        <h2>Reset Your Password</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 25px;">Enter your email address and we'll send you a password reset link.</p>
+        
+        <div class="form-group">
+          <label for="resetEmail">Email Address</label>
+          <input type="email" id="resetEmail" placeholder="Your email address" required>
+        </div>
+        
+        <button type="submit" class="auth-submit">Send Reset Link</button>
+        <div class="auth-switch"><a id="backToLogin">Back to Login</a></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Dialogs -->
+  <div class="custom-dialog" id="genericDialog">
+    <div class="dialog-content">
+      <div class="dialog-icon" id="dialogIcon"></div>
+      <h3 class="dialog-title" id="dialogTitle"></h3>
+      <p class="dialog-message" id="dialogMessage"></p>
+      <div class="dialog-buttons" id="dialogButtons"></div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBE5yRL0Vx6a1asXMMioEr3t9Ah2w3QxtM",
+      authDomain: "talent-f474d.firebaseapp.com",
+      projectId: "talent-f474d",
+      storageBucket: "talent-f474d.firebasestorage.app",
+      messagingSenderId: "826760976811",
+      appId: "1:826760976811:web:34c70fe2619bd047885aee",
+      measurementId: "G-7L12448Y3H",
+      databaseURL: "https://talent-f474d-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    // Tab switching
+    const loginTab = document.getElementById('loginTab');
+    const signupTab = document.getElementById('signupTab');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const switchToSignup = document.getElementById('switchToSignup');
+    const switchToLogin = document.getElementById('switchToLogin');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const backToLogin = document.getElementById('backToLogin');
+
+    loginTab.addEventListener('click', () => {
+      loginTab.classList.add('active');
+      signupTab.classList.remove('active');
+      loginForm.classList.add('active');
+      signupForm.classList.remove('active');
+      forgotPasswordForm.classList.remove('active');
+    });
+
+    signupTab.addEventListener('click', () => {
+      signupTab.classList.add('active');
+      loginTab.classList.remove('active');
+      signupForm.classList.add('active');
+      loginForm.classList.remove('active');
+      forgotPasswordForm.classList.remove('active');
+    });
+
+    switchToSignup.addEventListener('click', (e) => {
+      e.preventDefault();
+      signupTab.click();
+    });
+
+    switchToLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginTab.click();
+    });
+
+    forgotPasswordLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginTab.classList.remove('active');
+      signupTab.classList.remove('active');
+      loginForm.classList.remove('active');
+      signupForm.classList.remove('active');
+      forgotPasswordForm.classList.add('active');
+    });
+
+    backToLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginTab.click();
+    });
+
+    function togglePassword(id) {
+      const field = document.getElementById(id);
+      const icon = field.nextElementSibling.querySelector('i');
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        field.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    }
+
+    // Password strength checker
+    const signupPassword = document.getElementById('signupPassword');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+
+    signupPassword.addEventListener('input', () => {
+      const password = signupPassword.value;
+      const strength = calculatePasswordStrength(password);
+      
+      strengthBar.style.width = strength.percentage + '%';
+      strengthBar.style.background = strength.color;
+      strengthText.textContent = strength.text;
+      strengthText.className = 'password-strength-text ' + strength.class;
+    });
+
+    function calculatePasswordStrength(password) {
+      let score = 0;
+      if (!password) return { percentage: 0, color: '#ddd', text: '', class: '' };
+      
+      if (password.length >= 8) score += 25;
+      if (password.length >= 12) score += 25;
+      if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 20;
+      if (/\d/.test(password)) score += 15;
+      if (/[^a-zA-Z0-9]/.test(password)) score += 15;
+      
+      if (score < 40) {
+        return { percentage: score, color: '#ef4444', text: 'Weak password', class: 'strength-weak' };
+      } else if (score < 70) {
+        return { percentage: score, color: '#f59e0b', text: 'Medium strength', class: 'strength-medium' };
+      } else {
+        return { percentage: score, color: '#10b981', text: 'Strong password', class: 'strength-strong' };
+      }
+    }
+
+    // Dialog helper
+    function showDialog(icon, title, message, buttons = []) {
+      const dialog = document.getElementById('genericDialog');
+      const dialogIcon = document.getElementById('dialogIcon');
+      const dialogTitle = document.getElementById('dialogTitle');
+      const dialogMessage = document.getElementById('dialogMessage');
+      const dialogButtons = document.getElementById('dialogButtons');
+
+      dialogIcon.innerHTML = icon;
+      dialogTitle.textContent = title;
+      dialogMessage.textContent = message;
+      
+      dialogButtons.innerHTML = '';
+      buttons.forEach(btn => {
+        const button = document.createElement('button');
+        button.className = 'dialog-button ' + (btn.primary ? 'primary' : 'secondary');
+        button.textContent = btn.text;
+        button.onclick = () => {
+          dialog.classList.remove('active');
+          if (btn.onclick) btn.onclick();
+        };
+        dialogButtons.appendChild(button);
+      });
+
+      if (buttons.length === 0) {
+        setTimeout(() => dialog.classList.remove('active'), 2000);
+      }
+
+      dialog.classList.add('active');
+    }
+
+    // Load saved login
+    window.addEventListener('load', () => {
+      const savedEmail = localStorage.getItem('talentConnectEmail');
+      const savedUserType = localStorage.getItem('talentConnectUserType');
+      if (savedEmail) {
+        document.getElementById('loginEmail').value = savedEmail;
+        if (savedUserType) {
+          document.getElementById('loginUserType').value = savedUserType;
+        }
+        document.getElementById('rememberMe').checked = true;
+      }
+    });
+
+    // Signup
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const pass = document.getElementById('signupPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+      const userType = document.getElementById('signupUserType').value;
+
+      if (pass !== confirm) {
+        showDialog(
+          '<i class="fas fa-exclamation-circle error"></i>',
+          'Password Mismatch',
+          'The passwords you entered do not match. Please try again.',
+          [{ text: 'OK', primary: true }]
+        );
+        return;
+      }
+
+      if (!userType) {
+        showDialog(
+          '<i class="fas fa-exclamation-circle error"></i>',
+          'Select User Type',
+          'Please select whether you are registering as a Customer or Event Organiser.',
+          [{ text: 'OK', primary: true }]
+        );
+        return;
+      }
+
+      const strength = calculatePasswordStrength(pass);
+      if (strength.percentage < 40) {
+        showDialog(
+          '<i class="fas fa-exclamation-circle error"></i>',
+          'Weak Password',
+          'Your password is too weak. Please use at least 8 characters with a mix of uppercase, lowercase, numbers, and special characters.',
+          [{ text: 'OK', primary: true }]
+        );
+        return;
+      }
+
+      try {
+        // Check if user already exists with this email and user type
+        const emailKey = email.replace(/[.#$[\]]/g, '_');
+        const existingUserSnap = await db.ref('userEmails/' + emailKey + '/' + userType).once('value');
+        
+        if (existingUserSnap.exists()) {
+          showDialog(
+            '<i class="fas fa-exclamation-circle error"></i>',
+            'Account Already Exists',
+            `An account with this email already exists as a ${userType}. Please login instead.`,
+            [
+              { text: 'Go to Login', primary: true, onclick: () => loginTab.click() },
+              { text: 'Cancel', primary: false }
+            ]
+          );
+          return;
+        }
+
+        const userCred = await auth.createUserWithEmailAndPassword(email, pass);
+        const uid = userCred.user.uid;
+        
+        // Save user data
+        await db.ref('users/' + uid).set({
+          name,
+          email,
+          userType,
+          createdAt: new Date().toISOString()
+        });
+
+        // Save email mapping for duplicate check
+        await db.ref('userEmails/' + emailKey + '/' + userType).set(uid);
+
+        showDialog(
+          '<i class="fas fa-check-circle success"></i>',
+          'Account Created!',
+          'Your TalentConnect account has been successfully created. Redirecting...',
+          []
+        );
+
+        setTimeout(() => {
+          window.location.href = userType === 'organiser' ? 'organiserdashboard.html' : 'index.html';
+        }, 2000);
+      } catch (err) {
+        showDialog(
+          '<i class="fas fa-exclamation-circle error"></i>',
+          'Signup Failed',
+          err.message,
+          [{ text: 'OK', primary: true }]
+        );
+      }
+    });
+
+    // Login
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
+      const userType = document.getElementById('loginUserType').value;
+      const rememberMe = document.getElementById('rememberMe').checked;
+
+      if (!userType) {
+        showDialog(
+          '<i class="fas fa-exclamation-circle error"></i>',
+          'Select User Type',
+          'Please select whether you are logging in as a Customer or Event Organiser.',
+          [{ text: 'OK', primary: true }]
+        );
+        return;
+      }
+
+      try {
+        const userCred = await auth.signInWithEmailAndPassword(email, pass);
+        const uid = userCred.user.uid;
+        const snap = await db.ref('users/' + uid).once('value');
+        const data = snap.val();
+
+        if (!data) {
+          showDialog(
+            '<i class="fas fa-exclamation-circle error"></i>',
+            'Account Not Found',
+            'No user record found for this account.',
+            [{ text: 'OK', primary: true }]
+          );
+          await auth.signOut();
+          return;
+        }
+
+        if (data.userType !== userType) {
+          showDialog(
+            '<i class="fas fa-exclamation-circle error"></i>',
+            'Wrong User Type',
+            `This account is registered as a ${data.userType}, not a ${userType}. Please select the correct user type.`,
+            [{ text: 'OK', primary: true }]
+          );
+          await auth.signOut();
+          return;
+        }
+
+        // Save login info if remember me is checked
+        if (rememberMe) {
+          localStorage.setItem('talentConnectEmail', email);
+          localStorage.setItem('talentConnectUserType', userType);
+        } else {
+          localStorage.removeItem('talentConnectEmail');
+          localStorage.removeItem('talentConnectUserType');
+        }
+
+        // Save current user session
+        sessionStorage.setItem('currentUser', JSON.stringify({
+          uid,
+          name: data.name,
+          email: data.email,
+          userType: data.userType
+        }));
+
+        showDialog(
+          '<i class="fas fa-check-circle success"></i>',
+          'Welcome Back!',
+          `You have successfully signed in as ${data.name}. Redirecting...`,
+          []
+        );
+
+        setTimeout(() => {
+          window.location.href = data.userType === 'organiser' ? 'organiserdashboard.html' : 'index.html';
+        }, 2000);
+      } catch (err) {
+        showDialog(
+          '<i class="fas fa-exclamation-circle error"></i>',
+          'Login Failed',
+          err.message,
+          [{ text: 'OK', primary: true }]
+        );
+      }
+    });
+
+    // Forgot Password
+    forgotPasswordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('resetEmail').value.trim();
+
+      try {
+        await auth.sendPasswordResetEmail(email);
+        showDialog(
+          '<i class="fas fa-check-circle success"></i>',
+          'Reset Email Sent',
+          'A password reset link has been sent to your email address. Please check your inbox.',
+          [{ text: 'OK', primary: true, onclick: () => loginTab.click() }]
+        );
+        document.getElementById('resetEmail').value = '';
+      } catch (err) {
+        showDialog(
+          '<i class="fas fa-exclamation-circle error"></i>',
+          'Reset Failed',
+          err.message,
+          [{ text: 'OK', primary: true }]
+        );
+      }
+    });
+  </script>
+</body>
+</html>
