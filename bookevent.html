@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Event - TalentConnect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: #f8f6ff;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+    
+    header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #5b21b6;
+    }
+    
+    header nav {
+      display: flex;
+      align-items: center;
+    }
+    
+    header nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+    
+    header nav a:hover {
+      color: #f97316;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 90px auto 50px;
+      padding: 0 20px;
+    }
+
+    .booking-wrapper {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .event-details-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .event-image {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .event-title {
+      font-size: 32px;
+      color: #5b21b6;
+      margin-bottom: 15px;
+    }
+
+    .event-meta-item {
+      display: flex;
+      align-items: center;
+      margin: 12px 0;
+      color: #666;
+    }
+
+    .event-meta-item i {
+      color: #5b21b6;
+      width: 25px;
+      margin-right: 10px;
+    }
+
+    .event-description {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .booking-form-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 90px;
+      height: fit-content;
+    }
+
+    .form-section {
+      margin-bottom: 25px;
+    }
+
+    .form-section h3 {
+      color: #5b21b6;
+      margin-bottom: 15px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #4b5563;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #5b21b6;
+    }
+
+    .ticket-selector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f9fafb;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .ticket-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .ticket-btn {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #5b21b6;
+      background: white;
+      color: #5b21b6;
+      border-radius: 8px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .ticket-btn:hover {
+      background: #5b21b6;
+      color: white;
+    }
+
+    .ticket-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .ticket-count {
+      font-size: 24px;
+      font-weight: bold;
+      color: #5b21b6;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .price-breakdown {
+      background: #f9fafb;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      color: #666;
+    }
+
+    .price-row.total {
+      font-size: 20px;
+      font-weight: bold;
+      color: #5b21b6;
+      padding-top: 15px;
+      border-top: 2px solid #e5e7eb;
+      margin-top: 15px;
+    }
+
+    .book-button {
+      width: 100%;
+      padding: 15px;
+      background: #f97316;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 20px;
+    }
+
+    .book-button:hover {
+      background: #ff8c3f;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3);
+    }
+
+    .book-button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 15px;
+      color: #10b981;
+      font-size: 14px;
+    }
+
+    .event-highlights {
+      margin-top: 25px;
+      padding: 20px;
+      background: #f5f3ff;
+      border-radius: 8px;
+      border-left: 4px solid #5b21b6;
+    }
+
+    .event-highlights h4 {
+      color: #5b21b6;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .highlight-item {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      color: #666;
+    }
+
+    .highlight-item i {
+      color: #5b21b6;
+      margin-right: 10px;
+      width: 20px;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 3000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .loading-spinner {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .loading-spinner i {
+      font-size: 48px;
+      color: #5b21b6;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    footer {
+      background: #5b21b6;
+      color: #fff;
+      padding: 40px 20px 20px;
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    @media (max-width: 968px) {
+      .booking-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .booking-form-card {
+        position: static;
+      }
+
+      .event-title {
+        font-size: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 15px 20px;
+      }
+
+      .container {
+        padding: 0 15px;
+      }
+
+      .event-details-card,
+      .booking-form-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <img src="logo.jpg" style="height: 25px;">
+      <span>TalentConnect</span>
+    </div>
+    
+    <nav>
+      <a href="Index.html">Home</a>
+      <a href="browse3.html">Browse Events</a>
+      <a href="aboutus.html">About</a>
+      <a href="ContactUs.html">Contact</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="booking-wrapper">
+      <!-- Event Details -->
+      <div class="event-details-card">
+        <img id="eventImage" class="event-image" src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800" alt="Event">
+        
+        <h1 class="event-title" id="eventTitle">Loading Event...</h1>
+        
+        <div class="event-meta-item">
+          <i class="fas fa-calendar-alt"></i>
+          <span id="eventDate">Date Loading...</span>
+        </div>
+        
+        <div class="event-meta-item">
+          <i class="fas fa-clock"></i>
+          <span id="eventTime">Time Loading...</span>
+        </div>
+        
+        <div class="event-meta-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span id="eventLocation">Location Loading...</span>
+        </div>
+        
+        <div class="event-meta-item">
+          <i class="fas fa-tag"></i>
+          <span id="eventCategory">Category Loading...</span>
+        </div>
+        
+        <div class="event-description">
+          <h3>About This Event</h3>
+          <p id="eventDescription">Description loading...</p>
+        </div>
+        
+        <!-- Event Highlights Section -->
+        <div class="event-highlights">
+          <h4>Event Highlights</h4>
+          <div class="highlight-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Live performances by top artists</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Networking opportunities</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Complimentary refreshments</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Free parking available</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Form -->
+      <div class="booking-form-card">
+        <form id="bookingForm">
+          <!-- Personal Information -->
+          <div class="form-section">
+            <h3><i class="fas fa-user"></i> Your Information</h3>
+            
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" id="fullName" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input type="email" id="email" placeholder="your.email@example.com" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" id="phone" placeholder="+91 XXXXX XXXXX" required>
+            </div>
+          </div>
+
+          <!-- Ticket Selection -->
+          <div class="form-section">
+            <h3><i class="fas fa-ticket-alt"></i> Select Tickets</h3>
+            
+            <div class="ticket-selector">
+              <div>
+                <strong>Number of Tickets</strong>
+                <p style="font-size: 14px; color: #666;">₹<span id="ticketPrice">0</span> per ticket</p>
+              </div>
+              <div class="ticket-controls">
+                <button type="button" class="ticket-btn" id="decreaseTicket">-</button>
+                <span class="ticket-count" id="ticketCount">1</span>
+                <button type="button" class="ticket-btn" id="increaseTicket">+</button>
+              </div>
+            </div>
+
+            <p style="font-size: 14px; color: #666; margin-top: 10px;">
+              <i class="fas fa-info-circle"></i> Maximum 10 tickets per booking
+            </p>
+          </div>
+
+          <!-- Price Breakdown -->
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span>Ticket Price (×<span id="ticketMultiplier">1</span>)</span>
+              <span>₹<span id="subtotal">0</span></span>
+            </div>
+            <div class="price-row">
+              <span>Booking Fee</span>
+              <span>₹<span id="bookingFee">50</span></span>
+            </div>
+            <div class="price-row">
+              <span>GST (18%)</span>
+              <span>₹<span id="gst">0</span></span>
+            </div>
+            <div class="price-row total">
+              <span>Total Amount</span>
+              <span>₹<span id="totalAmount">0</span></span>
+            </div>
+          </div>
+
+          <!-- Terms & Conditions -->
+          <div class="form-group" style="margin-top: 20px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" id="termsCheckbox" required style="width: auto;">
+              <span>I agree to the <a href="#" style="color: #5b21b6;">Terms & Conditions</a></span>
+            </label>
+          </div>
+
+          <button type="submit" class="book-button" id="bookButton">
+            <i class="fas fa-lock"></i> Confirm & Pay ₹<span id="payAmount">0</span>
+          </button>
+
+          <div class="secure-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span>Secure payment powered by Razorpay</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner"></i>
+      <p style="margin-top: 15px; color: #5b21b6; font-weight: 600;">Saving booking details...</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 TalentConnect. All rights reserved.</p>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBE5yRL0Vx6a1asXMMioEr3t9Ah2w3QxtM",
+      authDomain: "talent-f474d.firebaseapp.com",
+      projectId: "talent-f474d",
+      storageBucket: "talent-f474d.firebasestorage.app",
+      messagingSenderId: "826760976811",
+      appId: "1:826760976811:web:34c70fe2619bd047885aee",
+      measurementId: "G-7L12448Y3H",
+      databaseURL: "https://talent-f474d-default-rtdb.firebaseio.com",
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    let currentEvent = null;
+    let ticketCount = 1;
+    let ticketPrice = 0;
+
+    // Load event details from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('eventId');
+
+    if (eventId) {
+      loadEventDetails(eventId);
+    } else {
+      alert('No event selected!');
+      window.location.href = 'browse3.html';
+    }
+
+    function loadEventDetails(eventId) {
+      database.ref('events/' + eventId).once('value')
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            currentEvent = snapshot.val();
+            displayEventDetails(currentEvent);
+          } else {
+            alert('Event not found!');
+            window.location.href = 'browse3.html';
+          }
+        })
+        .catch((error) => {
+          console.error('Error loading event:', error);
+          alert('Error loading event details');
+        });
+    }
+
+    function displayEventDetails(event) {
+      document.getElementById('eventTitle').textContent = event.name;
+      document.getElementById('eventImage').src = event.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800';
+      document.getElementById('eventDate').textContent = event.date;
+      document.getElementById('eventTime').textContent = `${event.startTime} - ${event.endTime}`;
+      document.getElementById('eventLocation').textContent = `${event.venueName}, ${event.venueAddress}`;
+      document.getElementById('eventCategory').textContent = event.category;
+      document.getElementById('eventDescription').textContent = event.description;
+      
+      ticketPrice = parseInt(event.ticketPrice) || 0;
+      document.getElementById('ticketPrice').textContent = ticketPrice;
+      
+      updatePriceBreakdown();
+    }
+
+    // Ticket counter
+    document.getElementById('increaseTicket').addEventListener('click', () => {
+      if (ticketCount < 10) {
+        ticketCount++;
+        document.getElementById('ticketCount').textContent = ticketCount;
+        updatePriceBreakdown();
+      }
+    });
+
+    document.getElementById('decreaseTicket').addEventListener('click', () => {
+      if (ticketCount > 1) {
+        ticketCount--;
+        document.getElementById('ticketCount').textContent = ticketCount;
+        updatePriceBreakdown();
+      }
+    });
+
+    function updatePriceBreakdown() {
+      const subtotal = ticketPrice * ticketCount;
+      const bookingFee = 50;
+      const gst = Math.round((subtotal + bookingFee) * 0.18);
+      const total = subtotal + bookingFee + gst;
+
+      document.getElementById('ticketMultiplier').textContent = ticketCount;
+      document.getElementById('subtotal').textContent = subtotal;
+      document.getElementById('gst').textContent = gst;
+      document.getElementById('totalAmount').textContent = total;
+      document.getElementById('payAmount').textContent = total;
+    }
+
+    // Form submission - save to Firebase and redirect to payment page
+    document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      if (!document.getElementById('termsCheckbox').checked) {
+        alert('Please accept the terms and conditions');
+        return;
+      }
+
+      // Show loading
+      document.getElementById('loadingOverlay').classList.add('active');
+
+      // Calculate all amounts
+      const subtotal = ticketPrice * ticketCount;
+      const bookingFee = 50;
+      const gstAmount = Math.round((subtotal + bookingFee) * 0.18);
+      const totalAmount = subtotal + bookingFee + gstAmount;
+
+      // Generate pending booking ID
+      const pendingBookingId = 'PB' + Date.now();
+
+      // Prepare booking data
+      const bookingData = {
+        pendingBookingId: pendingBookingId,
+        eventId: eventId,
+        eventName: currentEvent.name,
+        eventDate: currentEvent.date,
+        eventTime: `${currentEvent.startTime} - ${currentEvent.endTime}`,
+        eventVenue: `${currentEvent.venueName}, ${currentEvent.venueAddress}`,
+        fullName: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        ticketCount: ticketCount,
+        ticketPrice: ticketPrice,
+        bookingFee: bookingFee,
+        gstAmount: gstAmount,
+        totalAmount: totalAmount,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        // Save to Firebase under 'pendingBookings' node
+        await database.ref('pendingBookings/' + pendingBookingId).set(bookingData);
+        
+        console.log('Booking data saved to Firebase:', pendingBookingId);
+        
+        // Hide loading
+        document.getElementById('loadingOverlay').classList.remove('active');
+
+        // Redirect to payment page with booking ID
+        window.location.href = `razorpay_payment.html?bookingId=${pendingBookingId}`;
+        
+      } catch (error) {
+        console.error('Error saving booking to Firebase:', error);
+        document.getElementById('loadingOverlay').classList.remove('active');
+        alert('Error saving booking details. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>
