@@ -379,9 +379,10 @@
 
   <header>
     <div class="logo">
-      <span>🎯 TalentConnect</span>
+     
+      <img src="logo.jpg" style="height: 25px;">
+      <span>TalentConnect</span>
     </div>
-    
     <div class="menu-toggle" id="menuToggle">
       <span></span>
       <span></span>
@@ -390,10 +391,10 @@
     
     <nav id="mainNav">
       <a href="Index.html">Home</a>
-      <a href="#" style="color: #f97316; font-weight: bold;">Browse Events</a>
+      <a href="browse3.html" style="color: #f97316; font-weight: bold;">Browse Events</a>
       <a href="aboutus.html">About Us</a>
-      <a href="Contactus.html">Contact</a>
-      <a href="#">Host Your Event</a>
+      <a href="ContactUs.html">Contact</a>
+      <a href="Host3.html">Host Your Event</a>
       
       <div class="mobile-auth">
         <button class="login" onclick="location.href='login.html'">Login</button>
@@ -515,19 +516,20 @@
     // IMPORTANT: Replace this with your own Firebase config
    const firebaseConfig = {
 
-  apiKey: "AIzaSyCLybIEAvolI1OESSwZAM1Xmvxxei6G8b4",
+  apiKey: "AIzaSyBE5yRL0Vx6a1asXMMioEr3t9Ah2w3QxtM",
 
-  authDomain: "talentconnect-69929.firebaseapp.com",
+  authDomain: "talent-f474d.firebaseapp.com",
 
-  projectId: "talentconnect-69929",
+  projectId: "talent-f474d",
 
-  storageBucket: "talentconnect-69929.firebasestorage.app",
+  storageBucket: "talent-f474d.firebasestorage.app",
 
-  messagingSenderId: "474570077325",
+  messagingSenderId: "826760976811",
 
-  appId: "1:474570077325:web:a2689a7b0bc948e0465ec4",
+  appId: "1:826760976811:web:34c70fe2619bd047885aee",
 
-  measurementId: "G-YBTYJTV9ZB"
+  measurementId: "G-7L12448Y3H",
+  databaseURL:"https://talent-f474d-default-rtdb.firebaseio.com",
 
 };
 
@@ -631,30 +633,30 @@
         return;
       }
       
-      eventsToDisplay.forEach(event => {
-        const eventCard = document.createElement('div');
-        eventCard.className = 'event-card';
-        eventCard.innerHTML = `
-          <img src="${event.image}" alt="${event.title}">
-          <div class="event-card-content">
-            <h3>${event.title}</h3>
-            <div class="event-meta">
-              <i class="fas fa-calendar-alt"></i>
-              <span>${event.date}</span>
-            </div>
-            <div class="event-meta">
-              <i class="fas fa-map-marker-alt"></i>
-              <span>${event.location}</span>
-            </div>
-            <p>${event.description}</p>
-            <div class="event-price">${event.price === 0 ? 'Free' : '₹ ' + event.price + ' onwards'}</div>
-            <button class="btn ${event.status === 'upcoming' ? 'btn-ghost' : ''}">
-              ${event.status === 'upcoming' ? 'Coming Soon' : 'Book Tickets'}
-            </button>
-          </div>
-        `;
-        eventsContainer.appendChild(eventCard);
-      });
+  eventsToDisplay.forEach(event => {
+  const eventCard = document.createElement('div');
+  eventCard.className = 'event-card';
+  eventCard.innerHTML = `
+    <img src="${event.image}" alt="${event.title}">
+    <div class="event-card-content">
+      <h3>${event.title}</h3>
+      <div class="event-meta">
+        <i class="fas fa-calendar-alt"></i>
+        <span>${event.date}</span>
+      </div>
+      <div class="event-meta">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>${event.location}</span>
+      </div>
+      <p>${event.description.substring(0, 100)}${event.description.length > 100 ? '...' : ''}</p>
+      <div class="event-price">${event.price === 0 ? 'Free' : '₹ ' + event.price + ' onwards'}</div>
+      <button class="btn ${event.status === 'upcoming' ? 'btn-ghost' : ''}" onclick="bookEvent('${event.id}')">
+        ${event.status === 'upcoming' ? 'Coming Soon' : 'Book Tickets'}
+      </button>
+    </div>
+  `;
+  eventsContainer.appendChild(eventCard);
+});
       
       updatePagination(totalPages);
       document.querySelector('.events-grid-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -748,13 +750,19 @@
       displayEvents(sortedEvents);
     }
     
+
     // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-      loadEventsFromFirebase();
-      document.getElementById('applyFilters').addEventListener('click', filterEvents);
-      document.getElementById('resetFilters').addEventListener('click', resetFilters);
-      document.getElementById('sort').addEventListener('change', sortEvents);
-    });
+document.addEventListener('DOMContentLoaded', function() {
+  loadEventsFromFirebase();
+  document.getElementById('applyFilters').addEventListener('click', filterEvents);
+  document.getElementById('resetFilters').addEventListener('click', resetFilters);
+  document.getElementById('sort').addEventListener('change', sortEvents);
+});
+
+// Book event function - redirects to booking page
+function bookEvent(eventId) {
+  window.location.href = `bookevent.html?eventId=${eventId}`;
+}
   </script>
 </body>
 </html>
