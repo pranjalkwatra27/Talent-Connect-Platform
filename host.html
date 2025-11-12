@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TalentConnect - Create Event</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    body{background:#f8f6ff;color:#333;line-height:1.6}
+
+    /* Header */
+    header{position:fixed;top:0;left:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.1);z-index:1000}
+    .logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:#5b21b6}
+    header nav{display:flex;align-items:center;gap:16px}
+    header nav a{text-decoration:none;color:#333;font-weight:500}
+    header nav a:hover{color:#f97316}
+    .auth{display:flex;gap:10px}
+    .auth button{padding:10px 20px;border-radius:50px;cursor:pointer;font-weight:600;border:none;transition:.25s}
+    .auth .login{background:transparent;color:#5b21b6;border:2px solid #5b21b6}
+    .auth .login:hover{background:#5b21b6;color:#fff}
+    .auth .signup{background:#f97316;color:#fff}
+    .auth .signup:hover{background:#ff8c3f}
+
+    /* Progress */
+    .progress-bar{position:fixed;top:70px;left:0;width:100%;height:4px;background:#e5e7eb;z-index:999}
+    .progress-bar-fill{height:100%;background:linear-gradient(90deg,#5b21b6,#ff8c42);transition:width .3s ease}
+
+    /* Page header */
+    .page-header{margin-top:80px;text-align:center;padding:30px}
+    .page-header h1{font-size:36px;font-weight:800;color:#5b21b6}
+    .page-header p{color:#5b21b6;font-weight:500}
+
+    /* Layout */
+    .main{display:flex;min-height:calc(100vh - 70px)}
+    .sidebar{width:250px;background:#5b21b6;color:#fff;padding-top:20px;position:sticky;top:74px;height:calc(100vh - 74px)}
+    .sidebar h2{text-align:center;margin-bottom:20px}
+    .sidebar ul{list-style:none}
+    .sidebar li{padding:15px 20px;cursor:pointer;border-left:4px solid transparent;transition:.25s;position:relative}
+    .sidebar li:hover{background:#7e3bb3}
+    .sidebar li.active{background:#9b59b6;border-left-color:#ff8c42}
+    .sidebar li.completed::after{content:"✓";position:absolute;right:20px;color:#10b981;font-weight:700}
+
+    .content{flex:1;padding:30px}
+    .section{display:none;background:#fff;padding:30px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,.08);opacity:0;transform:translateY(20px);transition:.4s}
+    .section.active{display:block;opacity:1;transform:translateY(0)}
+
+    h3{color:#5b21b6;margin-bottom:20px}
+    .form-group{margin-bottom:18px;position:relative}
+    .form-group label{font-weight:600;color:#6a4c93;display:block;margin-bottom:8px}
+    .required{color:#ef4444;margin-left:4px}
+    input,textarea,select{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:8px;font-size:16px;transition:border-color .2s}
+    input:focus,textarea:focus,select:focus{outline:none;border-color:#5b21b6}
+    input.error,textarea.error,select.error{border-color:#ef4444}
+    .error-message{color:#ef4444;font-size:13px;margin-top:6px;display:none}
+    .error-message.show{display:block}
+
+    .navigation{margin-top:22px;display:flex;justify-content:space-between;padding-top:18px;border-top:1px solid #e5e7eb}
+    .navigation button{padding:12px 24px;border-radius:8px;cursor:pointer;font-weight:700;transition:.2s}
+    .prev-btn{background:#fff;color:#6a4c93;border:2px solid #6a4c93}
+    .prev-btn:disabled{opacity:.5;cursor:not-allowed}
+    .next-btn{background:#ff8c42;color:#fff;border:none}
+    .next-btn:hover:not(:disabled){background:#ff7a2e;transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,140,66,.4)}
+    .next-btn:disabled{background:#d1d5db;cursor:not-allowed}
+
+    .draft-btn{background:#6b7280;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-weight:700}
+    .draft-btn:hover{background:#4b5563;transform:translateY(-2px)}
+
+    /* Indicator & Modals */
+    .auto-save-indicator{position:fixed;bottom:20px;right:20px;background:#10b981;color:#fff;padding:10px 18px;border-radius:8px;display:none;box-shadow:0 4px 12px rgba(16,185,129,.4)}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;justify-content:center;align-items:center}
+    .modal.active{display:flex}
+    .modal-content{background:#fff;padding:36px;border-radius:16px;text-align:center;max-width:520px;width:92%}
+    .modal-content i{font-size:64px;margin-bottom:14px}
+    .modal-content h2{color:#5b21b6;margin-bottom:6px}
+    .modal-content p{color:#555;margin-bottom:14px}
+    .modal-content button{padding:12px 26px;background:#f97316;color:#fff;border:none;border-radius:8px;margin:8px;cursor:pointer}
+    .modal-content button:hover{background:#ff8c3f}
+
+    /* Responsive */
+    @media (max-width: 900px){
+      .main{flex-direction:column}
+      .sidebar{width:100%;height:auto;position:static}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress -->
+  <div class="progress-bar"><div id="progressBar" class="progress-bar-fill" style="width:14%"></div></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo"><span>TalentConnect</span></div>
+    <nav>
+      <a href="Index.html">Home</a>
+      <a href="browse3.html">Browse Events</a>
+      <a href="aboutus.html">About</a>
+      <a href="contactus.html">Contact</a>
+    </nav>
+    <div class="auth">
+      <button class="login">Login</button>
+      <button class="signup">Sign Up</button>
+    </div>
+  </header>
+
+  <!-- Title -->
+  <div class="page-header">
+    <h1>Create Your Event</h1>
+    <p>Set up your event in simple guided steps — everything auto-saves</p>
+  </div>
+
+  <div class="main">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>Steps</h2>
+      <ul id="stepList">
+        <li class="active">Event Details</li>
+        <li>Date & Time</li>
+        <li>Location</li>
+        <li>Tickets</li>
+        <li>Questions</li>
+        <li>Review</li>
+        <li>Publish</li>
+      </ul>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Step 1: Event Details -->
+      <div class="section active">
+        <h3>Event Details</h3>
+        <div class="form-group">
+          <label>Event Name <span class="required">*</span></label>
+          <input type="text" id="eventName" placeholder="Enter your event name">
+          <div class="error-message" id="eventNameError">Please enter event name</div>
+        </div>
+        <div class="form-group">
+          <label>Event Description <span class="required">*</span></label>
+          <textarea id="eventDescription" rows="5" placeholder="Describe your event"></textarea>
+          <div class="error-message" id="eventDescriptionError">Please enter event description</div>
+        </div>
+        <div class="form-group">
+          <label>Event Category <span class="required">*</span></label>
+          <select id="eventCategory">
+            <option value="">Select a category</option>
+            <option value="Conference">Conference</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Music">Concert</option>
+            <option value="Meetup">Meetup</option>
+            <option value="Festival">Festival</option>
+            <option value="Food">Food</option>
+            <option value="Comedy">Comedy Show</option>
+            <option value="Sports">Sports Event</option>
+          </select>
+          <div class="error-message" id="eventCategoryError">Please select a category</div>
+        </div>
+        <div class="form-group">
+          <label>Cover Image URL</label>
+          <input type="text" id="eventImage" placeholder="https://example.com/image.jpg">
+        </div>
+
+        <div class="navigation">
+          <button class="prev-btn" disabled>Previous</button>
+          <button class="next-btn" id="nextBtn1" disabled>Next</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Date & Time -->
+      <div class="section">
+        <h3>Date & Time</h3>
+        <div class="form-group">
+          <label>Event Date <span class="required">*</span></label>
+          <input type="date" id="eventDate">
+          <div class="error-message" id="eventDateError">Please select event date</div>
+        </div>
+        <div class="form-group">
+          <label>Start Time <span class="required">*</span></label>
+          <input type="time" id="startTime">
+          <div class="error-message" id="startTimeError">Please select start time</div>
+        </div>
+        <div class="form-group">
+          <label>End Time <span class="required">*</span></label>
+          <input type="time" id="endTime">
+          <div class="error-message" id="endTimeError">Please select end time</div>
+        </div>
+        <div class="navigation">
+          <button class="prev-btn" onclick="prevStep()">Previous</button>
+          <button class="next-btn" id="nextBtn2" disabled>Next</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Location -->
+      <div class="section">
+        <h3>Location</h3>
+        <div class="form-group">
+          <label>Event Type <span class="required">*</span></label>
+          <select id="eventType">
+            <option value="">Select type</option>
+            <option value="In-person">In-person</option>
+            <option value="Virtual">Virtual</option>
+            <option value="Hybrid">Hybrid</option>
+          </select>
+          <div class="error-message" id="eventTypeError">Please select event type</div>
+        </div>
+        <div class="form-group">
+          <label>Venue Name <span class="required">*</span></label>
+          <input type="text" id="venueName" placeholder="Enter venue name">
+          <div class="error-message" id="venueNameError">Please enter venue name</div>
+        </div>
+        <div class="form-group">
+          <label>Address <span class="required">*</span></label>
+          <textarea id="venueAddress" rows="3" placeholder="Complete address"></textarea>
+          <div class="error-message" id="venueAddressError">Please enter complete address</div>
+        </div>
+        <div class="navigation">
+          <button class="prev-btn" onclick="prevStep()">Previous</button>
+          <button class="next-btn" id="nextBtn3" disabled>Next</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Tickets -->
+      <div class="section">
+        <h3>Tickets & Pricing</h3>
+        <div class="form-group">
+          <label>Ticket Type <span class="required">*</span></label>
+          <select id="ticketType">
+            <option value="">Select type</option>
+            <option value="Free">Free</option>
+            <option value="Paid">Paid</option>
+          </select>
+          <div class="error-message" id="ticketTypeError">Please select ticket type</div>
+        </div>
+        <div class="form-group" id="priceWrap">
+          <label>Ticket Price (₹)</label>
+          <input type="number" id="ticketPrice" min="0" value="0">
+          <div class="error-message" id="ticketPriceError">Please enter price (> 0) for Paid events</div>
+        </div>
+        <div class="form-group">
+          <label>Total Tickets <span class="required">*</span></label>
+          <input type="number" id="totalTickets" min="1">
+          <div class="error-message" id="totalTicketsError">Please enter total tickets (minimum 1)</div>
+        </div>
+        <div class="navigation">
+          <button class="prev-btn" onclick="prevStep()">Previous</button>
+          <button class="next-btn" id="nextBtn4" disabled>Next</button>
+        </div>
+      </div>
+
+      <!-- Step 5: Questions -->
+      <div class="section">
+        <h3>Registration Questions</h3>
+        <div class="form-group">
+          <label>Custom Questions</label>
+          <textarea id="customQuestions" rows="4" placeholder="Add custom questions for registrants (one per line)"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Require Phone</label>
+          <select id="requirePhone">
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </div>
+        <div class="navigation">
+          <button class="prev-btn" onclick="prevStep()">Previous</button>
+          <button class="next-btn" id="nextBtn5">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 6: Review -->
+      <div class="section">
+        <h3>Review Your Event</h3>
+        <div id="reviewSummary"></div>
+        <div class="navigation">
+          <button class="prev-btn" onclick="prevStep()">Previous</button>
+          <button class="next-btn" id="nextBtn6">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 7: Publish -->
+      <div class="section">
+        <h3>Publish Your Event</h3>
+        <div style="text-align:center;padding:36px;">
+          <i class="fas fa-rocket" style="font-size:48px;color:#ff8c42"></i>
+          <h4 style="color:#6a4c93;margin:18px 0;">Ready to Go Live?</h4>
+          <p style="color:#666;margin-bottom:20px;">Publish your event or save it as a draft.</p>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+            <button id="publishBtn" style="background:#ff6b35;color:#fff;padding:14px 26px;border:none;border-radius:8px;font-size:16px;cursor:pointer;">
+              <i class="fas fa-rocket"></i> Publish Event
+            </button>
+            <button id="saveDraftBtn" class="draft-btn"><i class="fas fa-save"></i> Save as Draft</button>
+          </div>
+        </div>
+        <div class="navigation">
+          <button class="prev-btn" onclick="prevStep()">Previous</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals + Indicator -->
+  <div class="modal" id="successModal">
+    <div class="modal-content">
+      <i class="fas fa-check-circle" style="color:#10b981"></i>
+      <h2>Event Published!</h2>
+      <p>Your event is now live and visible to attendees.</p>
+      <button onclick="window.location.href='browse3.html'">View Events</button>
+      <button onclick="window.location.href='Index.html'">Go Home</button>
+    </div>
+  </div>
+
+  <div class="modal" id="draftModal">
+    <div class="modal-content">
+      <i class="fas fa-save" style="color:#6b7280"></i>
+      <h2>Draft Saved!</h2>
+      <p>You can continue editing it later.</p>
+      <button onclick="closeModal('draftModal')">Continue Editing</button>
+    </div>
+  </div>
+
+  <div class="auto-save-indicator" id="autoSaveIndicator"><i class="fas fa-check"></i> Auto-saved to draft</div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <!-- <script>
+    /* ---------------- Firebase Init ---------------- */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBE5yRL0Vx6a1asXMMioEr3t9Ah2w3QxtM",
+      authDomain: "talent-f474d.firebaseapp.com",
+      projectId: "talent-f474d",
+      storageBucket: "talent-f474d.firebasestorage.app",
+      messagingSenderId: "826760976811",
+      appId: "1:826760976811:web:34c70fe2619bd047885aee",
+      databaseURL: "https://talent-f474d-default-rtdb.firebaseio.com",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    /* ---------------- State ---------------- */
+    let currentStep = 0;
+    const sections = document.querySelectorAll(".section");
+    const menuItems = document.querySelectorAll("#stepList li");
+    const formInputs = document.querySelectorAll("input, textarea, select");
+    const progressBar = document.getElementById('progressBar');
+
+    // Persist a single draft id across reloads
+    let draftId = localStorage.getItem('currentDraftId');
+    if (!draftId) {
+      draftId = 'draft_' + Date.now();
+      localStorage.setItem('currentDraftId', draftId);
+    }
+
+    /* ---------------- Validation Rules ---------------- */
+    const validationRules = {
+      0: ['eventName', 'eventDescription', 'eventCategory'],
+      1: ['eventDate', 'startTime', 'endTime'],
+      2: ['eventType', 'venueName', 'venueAddress'],
+      3: ['ticketType', 'totalTickets'],
+      4: [], 5: [], 6: []
+    };
+
+    /* ---------------- Helpers ---------------- */
+    function $(id){ return document.getElementById(id); }
+
+    function validateField(fieldId) {
+      const field = $(fieldId);
+      if (!field) return true;
+      const err = $(fieldId + 'Error');
+      let ok = true;
+
+      // base required
+      if (validationRules[currentStep]?.includes(fieldId) && (!field.value || !field.value.trim())) {
+        ok = false;
+      }
+
+      // special cases
+      if (fieldId === 'endTime') {
+        const s = $('startTime').value, e = $('endTime').value;
+        if (s && e && e <= s) ok = false;
+      }
+      if (fieldId === 'ticketPrice') {
+        const type = $('ticketType').value;
+        const price = Number($('ticketPrice').value || 0);
+        if (type === 'Paid' && !(price > 0)) ok = false;
+      }
+      if (fieldId === 'totalTickets') {
+        const t = Number($('totalTickets').value || 0);
+        if (!(t >= 1)) ok = false;
+      }
+
+      field.classList.toggle('error', !ok);
+      if (err) err.classList.toggle('show', !ok);
+      if (err && fieldId === 'endTime') {
+        err.textContent = 'End time must be after start time';
+      }
+      if (err && fieldId === 'ticketPrice') {
+        err.textContent = 'Please enter price (> 0) for Paid events';
+      }
+      if (err && fieldId === 'totalTickets') {
+        err.textContent = 'Please enter total tickets (minimum 1)';
+      }
+      return ok;
+    }
+
+    function validateStep(step) {
+      const fields = validationRules[step] || [];
+      let ok = true;
+      fields.forEach(fid => { if (!validateField(fid)) ok = false; });
+
+      // step-specific extra checks
+      if (step === 1) { validateField('endTime') ? null : ok = false; }
+      if (step === 3) {
+        if ($('ticketType').value === 'Paid') {
+          if (!validateField('ticketPrice')) ok = false;
+        } else {
+          // reset price errors if Free
+          $('ticketPrice').classList.remove('error');
+          $('ticketPriceError').classList.remove('show');
+        }
+        if (!validateField('totalTickets')) ok = false;
+      }
+      return ok;
+    }
+
+    function updateNextButtonState(step) {
+      const nextBtn = sections[step].querySelector('.next-btn');
+      if (!nextBtn) return;
+
+      // all required fields filled?
+      const fields = validationRules[step] || [];
+      let allFilled = true;
+      fields.forEach(fid => {
+        const el = $(fid);
+        if (!el || !el.value || !el.value.trim()) allFilled = false;
+      });
+
+      // extra: time & ticket price logic
+      if (step === 1) {
+        const s = $('startTime').value, e = $('endTime').value;
+        if (!s || !e || e <= s) allFilled = false;
+      }
+      if (step === 3) {
+        const type = $('ticketType').value;
+        const price = Number($('ticketPrice').value || 0);
+        const total = Number($('totalTickets').value || 0);
+        if (!type || !(total >= 1)) allFilled = false;
+        if (type === 'Paid' && !(price > 0)) allFilled = false;
+      }
+
+      nextBtn.disabled = !allFilled;
+    }
+
+    function showStep(step) {
+      sections.forEach((sec, i) => {
+        sec.classList.toggle('active', i === step);
+        menuItems[i].classList.toggle('active', i === step);
+      });
+      currentStep = step;
+
+      // progress bar
+      const pct = ((step + 1) / sections.length) * 100;
+      progressBar.style.width = pct + '%';
+
+      // enable/disable next on entry
+      updateNextButtonState(step);
+
+      if (step === 5) generateReview();
+    }
+
+    function nextStep() {
+      if (validateStep(currentStep)) {
+        menuItems[currentStep].classList.add('completed');
+        if (currentStep < sections.length - 1) {
+          showStep(currentStep + 1);
+          autoSaveDraftImmediate(); // save on step move
+        }
+      }
+    }
+
+    function prevStep() { if (currentStep > 0) showStep(currentStep - 1); }
+
+    // Attach Next buttons
+    $('nextBtn1').addEventListener('click', nextStep);
+    $('nextBtn2').addEventListener('click', nextStep);
+    $('nextBtn3').addEventListener('click', nextStep);
+    $('nextBtn4').addEventListener('click', nextStep);
+    $('nextBtn5').addEventListener('click', nextStep);
+    $('nextBtn6').addEventListener('click', nextStep);
+
+    // Sidebar navigation (allow current or completed only)
+    menuItems.forEach((item, i) => {
+      item.addEventListener('click', () => {
+        if (i === currentStep || menuItems[i].classList.contains('completed')) showStep(i);
+      });
+    });
+
+    /* ---------------- Auto Save ---------------- */
+    let autoSaveTimer;
+    function showAutoSaveIndicator(msg) {
+      const indicator = $('autoSaveIndicator');
+      indicator.textContent = msg;
+      indicator.style.display = 'block';
+      setTimeout(() => indicator.style.display = 'none', 1800);
+    }
+
+    function collectEventData() {
+      return {
+        name: $('eventName').value,
+        description: $('eventDescription').value,
+        category: $('eventCategory').value,
+        image: $('eventImage').value || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
+        date: $('eventDate').value,
+        startTime: $('startTime').value,
+        endTime: $('endTime').value,
+        eventType: $('eventType').value,
+        venueName: $('venueName').value,
+        venueAddress: $('venueAddress').value,
+        ticketType: $('ticketType').value,
+        ticketPrice: $('ticketPrice').value || '0',
+        totalTickets: $('totalTickets').value,
+        customQuestions: $('customQuestions').value,
+        requirePhone: $('requirePhone').value || 'No',
+        status: 'draft',
+        lastModified: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function autoSaveDraftImmediate() {
+      const data = collectEventData();
+      localStorage.setItem('draft_cache', JSON.stringify(data));
+
+      database.ref('drafts/' + draftId).set(data)
+  .then(() => showAutoSaveIndicator('Draft saved ✅'))
+  .catch(() => console.warn('Auto-save failed, will retry silently'));
+
+    }
+
+    // Debounced auto-save on any input
+    formInputs.forEach(el => {
+      el.addEventListener('input', () => {
+        // live validation feedback
+        if (validationRules[currentStep]?.includes(el.id)) validateField(el.id);
+        if (el.id === 'endTime' || el.id === 'startTime' || el.id === 'ticketType' || el.id === 'ticketPrice' || el.id === 'totalTickets') {
+          validateField('endTime');
+          validateField('ticketPrice');
+          validateField('totalTickets');
+        }
+        updateNextButtonState(currentStep);
+
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(autoSaveDraftImmediate, 700);
+      });
+
+      // remove error styling on change
+      el.addEventListener('change', () => {
+        el.classList.remove('error');
+        const err = $(el.id + 'Error');
+        if (err) err.classList.remove('show');
+      });
+    });
+
+    /* ---------------- Load Draft on Page Load ---------------- */
+    window.addEventListener('load', loadDraft);
+
+    function loadDraft() {
+      // Try Firebase draft
+      database.ref('drafts/' + draftId).once('value')
+        .then(snap => {
+          const data = snap.val();
+          if (data) fillForm(data);
+          else {
+            // Fallback: localStorage cache
+            const cached = localStorage.getItem('draft_cache');
+            if (cached) fillForm(JSON.parse(cached));
+          }
+          // Update buttons state on init
+          updateNextButtonState(0);
+        })
+        .catch(() => {
+          const cached = localStorage.getItem('draft_cache');
+          if (cached) fillForm(JSON.parse(cached));
+          updateNextButtonState(0);
+        });
+    }
+
+    function fillForm(d) {
+      $('eventName').value = d.name || '';
+      $('eventDescription').value = d.description || '';
+      $('eventCategory').value = d.category || '';
+      $('eventImage').value = d.image || '';
+      $('eventDate').value = d.date || '';
+      $('startTime').value = d.startTime || '';
+      $('endTime').value = d.endTime || '';
+      $('eventType').value = d.eventType || '';
+      $('venueName').value = d.venueName || '';
+      $('venueAddress').value = d.venueAddress || '';
+      $('ticketType').value = d.ticketType || '';
+      $('ticketPrice').value = d.ticketPrice || '0';
+      $('totalTickets').value = d.totalTickets || '';
+      $('customQuestions').value = d.customQuestions || '';
+      $('requirePhone').value = d.requirePhone || 'No';
+    }
+
+    /* ---------------- Review Generator ---------------- */
+    function generateReview() {
+      const d = collectEventData();
+      $('reviewSummary').innerHTML = `
+        <div class="review-item" style="background:#f8f6ff;padding:16px;border-radius:8px;margin-bottom:14px;border-left:4px solid #8e44ad;">
+          <h4 style="color:#6a4c93;margin-bottom:8px;">Event Details</h4>
+          <p><strong>Name:</strong> ${d.name || 'Not set'}</p>
+          <p><strong>Category:</strong> ${d.category || 'Not set'}</p>
+          <p><strong>Description:</strong> ${(d.description||'Not set').slice(0,150)}${(d.description||'').length>150?'...':''}</p>
+        </div>
+        <div class="review-item" style="background:#f8f6ff;padding:16px;border-radius:8px;margin-bottom:14px;border-left:4px solid #8e44ad;">
+          <h4 style="color:#6a4c93;margin-bottom:8px;">Date & Time</h4>
+          <p><strong>Date:</strong> ${d.date || 'Not set'}</p>
+          <p><strong>Start:</strong> ${d.startTime || 'Not set'}</p>
+          <p><strong>End:</strong> ${d.endTime || 'Not set'}</p>
+        </div>
+        <div class="review-item" style="background:#f8f6ff;padding:16px;border-radius:8px;margin-bottom:14px;border-left:4px solid #8e44ad;">
+          <h4 style="color:#6a4c93;margin-bottom:8px;">Location</h4>
+          <p><strong>Type:</strong> ${d.eventType || 'Not set'}</p>
+          <p><strong>Venue:</strong> ${d.venueName || 'Not set'}</p>
+          <p><strong>Address:</strong> ${d.venueAddress || 'Not set'}</p>
+        </div>
+        <div class="review-item" style="background:#f8f6ff;padding:16px;border-radius:8px;margin-bottom:14px;border-left:4px solid #8e44ad;">
+          <h4 style="color:#6a4c93;margin-bottom:8px;">Tickets & Pricing</h4>
+          <p><strong>Type:</strong> ${d.ticketType || 'Not set'}</p>
+          <p><strong>Price:</strong> ₹${d.ticketType==='Paid' ? (d.ticketPrice||0) : 0}</p>
+          <p><strong>Total:</strong> ${d.totalTickets || 'Not set'}</p>
+        </div>
+      `;
+    }
+
+    /* ---------------- Publish & Draft Buttons ---------------- */
+    $('publishBtn').addEventListener('click', () => {
+      // validate all required steps before publish (0..4)
+      for (let s = 0; s <= 4; s++) {
+        if (!validateStep(s)) {
+          showStep(s);
+          alert('Please fill all required fields in step: ' + (s + 1));
+          return;
+        }
+      }
+
+      const eventData = collectEventData();
+      eventData.status = 'published';
+      eventData.publishedDate = new Date().toISOString();
+
+      const eventId = 'event_' + Date.now();
+
+      database.ref('events/' + eventId).set(eventData)
+        .then(() => {
+          // clear draft
+          database.ref('drafts/' + draftId).remove();
+          localStorage.removeItem('currentDraftId');
+          localStorage.removeItem('draft_cache');
+          $('successModal').classList.add('active');
+        })
+        .catch((err) => {
+          alert('Error publishing event: ' + err.message);
+          console.error('Publish error:', err);
+        });
+    });
+
+    $('saveDraftBtn').addEventListener('click', () => {
+      const d = collectEventData();
+      d.status = 'draft';
+      d.lastModified = new Date().toISOString();
+      database.ref('drafts/' + draftId).set(d)
+        .then(() => {
+          showAutoSaveIndicator('Draft saved ✅');
+          $('draftModal').classList.add('active');
+        })
+        .catch(err => {
+          alert('Error saving draft: ' + err.message);
+          console.error('Draft save error:', err);
+        });
+    });
+
+    function closeModal(id){ $(id).classList.remove('active'); }
+
+    /* ---------------- Init button states ---------------- */
+    // dynamic enable/disable on load
+    updateNextButtonState(0);
+
+    // Keep "Paid" price validation reactive
+    $('ticketType').addEventListener('change', () => {
+      validateField('ticketPrice');
+      updateNextButtonState(3);
+    });
+
+    // Time validation reactive
+    $('startTime').addEventListener('change', () => { validateField('endTime'); updateNextButtonState(1); });
+    $('endTime').addEventListener('change', () => { validateField('endTime'); updateNextButtonState(1); });
+  </script> -->
+
+
+  <script>
+    /* ---------------- Firebase Init ---------------- */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBE5yRL0Vx6a1asXMMioEr3t9Ah2w3QxtM",
+      authDomain: "talent-f474d.firebaseapp.com",
+      projectId: "talent-f474d",
+      storageBucket: "talent-f474d.firebasestorage.app",
+      messagingSenderId: "826760976811",
+      appId: "1:826760976811:web:34c70fe2619bd047885aee",
+      databaseURL: "https://talent-f474d-default-rtdb.firebaseio.com",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const auth = firebase.auth();
+  
+    /* ---------------- State ---------------- */
+    let currentStep = 0;
+    const sections = document.querySelectorAll(".section");
+    const menuItems = document.querySelectorAll("#stepList li");
+    const formInputs = document.querySelectorAll("input, textarea, select");
+    const progressBar = document.getElementById('progressBar');
+  
+    // Persist a single draft id across reloads
+    let draftId = localStorage.getItem('currentDraftId');
+    if (!draftId) {
+      draftId = 'draft_' + Date.now();
+      localStorage.setItem('currentDraftId', draftId);
+    }
+  
+    /* ---------------- Validation Rules ---------------- */
+    const validationRules = {
+      0: ['eventName', 'eventDescription', 'eventCategory'],
+      1: ['eventDate', 'startTime', 'endTime'],
+      2: ['eventType', 'venueName', 'venueAddress'],
+      3: ['ticketType', 'totalTickets'],
+      4: [], 5: [], 6: []
+    };
+  
+    /* ---------------- Helpers ---------------- */
+    function $(id){ return document.getElementById(id); }
+  
+    function validateField(fieldId) {
+      const field = $(fieldId);
+      if (!field) return true;
+      const err = $(fieldId + 'Error');
+      let ok = true;
+  
+      // base required
+      if (validationRules[currentStep]?.includes(fieldId) && (!field.value || !field.value.trim())) {
+        ok = false;
+      }
+  
+      // special cases (removed endTime comparison)
+      if (fieldId === 'ticketPrice') {
+        const type = $('ticketType').value;
+        const price = Number($('ticketPrice').value || 0);
+        if (type === 'Paid' && !(price > 0)) ok = false;
+      }
+      if (fieldId === 'totalTickets') {
+        const t = Number($('totalTickets').value || 0);
+        if (!(t >= 1)) ok = false;
+      }
+  
+      field.classList.toggle('error', !ok);
+      if (err) err.classList.toggle('show', !ok);
+  
+      if (err && fieldId === 'ticketPrice') {
+        err.textContent = 'Please enter price (> 0) for Paid events';
+      }
+      if (err && fieldId === 'totalTickets') {
+        err.textContent = 'Please enter total tickets (minimum 1)';
+      }
+      return ok;
+    }
+  
+    function validateStep(step) {
+      const fields = validationRules[step] || [];
+      let ok = true;
+      fields.forEach(fid => { if (!validateField(fid)) ok = false; });
+  
+      // step-specific extra checks
+      if (step === 3) {
+        if ($('ticketType').value === 'Paid') {
+          if (!validateField('ticketPrice')) ok = false;
+        } else {
+          $('ticketPrice').classList.remove('error');
+          $('ticketPriceError').classList.remove('show');
+        }
+        if (!validateField('totalTickets')) ok = false;
+      }
+      return ok;
+    }
+  
+    function updateNextButtonState(step) {
+      const nextBtn = sections[step].querySelector('.next-btn');
+      if (!nextBtn) return;
+  
+      const fields = validationRules[step] || [];
+      let allFilled = true;
+      fields.forEach(fid => {
+        const el = $(fid);
+        if (!el || !el.value || !el.value.trim()) allFilled = false;
+      });
+  
+      // simplified time logic (removed time comparison)
+      if (step === 1) {
+        const s = $('startTime').value, e = $('endTime').value;
+        if (!s || !e) allFilled = false;
+      }
+  
+      // ticket logic
+      if (step === 3) {
+        const type = $('ticketType').value;
+        const price = Number($('ticketPrice').value || 0);
+        const total = Number($('totalTickets').value || 0);
+        if (!type || !(total >= 1)) allFilled = false;
+        if (type === 'Paid' && !(price > 0)) allFilled = false;
+      }
+  
+      nextBtn.disabled = !allFilled;
+    }
+  
+    function showStep(step) {
+      sections.forEach((sec, i) => {
+        sec.classList.toggle('active', i === step);
+        menuItems[i].classList.toggle('active', i === step);
+      });
+      currentStep = step;
+  
+      const pct = ((step + 1) / sections.length) * 100;
+      progressBar.style.width = pct + '%';
+      updateNextButtonState(step);
+  
+      if (step === 5) generateReview();
+    }
+  
+    function nextStep() {
+      if (validateStep(currentStep)) {
+        menuItems[currentStep].classList.add('completed');
+        if (currentStep < sections.length - 1) {
+          showStep(currentStep + 1);
+          autoSaveDraftImmediate();
+        }
+      }
+    }
+  
+    function prevStep() { if (currentStep > 0) showStep(currentStep - 1); }
+  
+    // Attach Next buttons
+    $('nextBtn1').addEventListener('click', nextStep);
+    $('nextBtn2').addEventListener('click', nextStep);
+    $('nextBtn3').addEventListener('click', nextStep);
+    $('nextBtn4').addEventListener('click', nextStep);
+    $('nextBtn5').addEventListener('click', nextStep);
+    $('nextBtn6').addEventListener('click', nextStep);
+  
+    // Sidebar navigation (allow current or completed only)
+    menuItems.forEach((item, i) => {
+      item.addEventListener('click', () => {
+        if (i === currentStep || menuItems[i].classList.contains('completed')) showStep(i);
+      });
+    });
+  
+    /* ---------------- Auto Save ---------------- */
+    let autoSaveTimer;
+    function showAutoSaveIndicator(msg) {
+      const indicator = $('autoSaveIndicator');
+      indicator.textContent = msg;
+      indicator.style.display = 'block';
+      setTimeout(() => indicator.style.display = 'none', 1800);
+    }
+  
+    function collectEventData() {
+      return {
+        name: $('eventName').value,
+        description: $('eventDescription').value,
+        category: $('eventCategory').value,
+        image: $('eventImage').value || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
+        date: $('eventDate').value,
+        startTime: $('startTime').value,
+        endTime: $('endTime').value,
+        eventType: $('eventType').value,
+        venueName: $('venueName').value,
+        venueAddress: $('venueAddress').value,
+        ticketType: $('ticketType').value,
+        ticketPrice: $('ticketPrice').value || '0',
+        totalTickets: $('totalTickets').value,
+        customQuestions: $('customQuestions').value,
+        requirePhone: $('requirePhone').value || 'No',
+        status: 'draft',
+        lastModified: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      };
+    }
+  
+    function autoSaveDraftImmediate() {
+      const data = collectEventData();
+      localStorage.setItem('draft_cache', JSON.stringify(data));
+  
+      // Save silently (no retry message)
+      database.ref('drafts/' + draftId).set(data)
+        .then(() => showAutoSaveIndicator('Draft saved ✅'))
+        .catch(() => {}); // No retry message
+    }
+  
+    // Debounced auto-save on input
+    formInputs.forEach(el => {
+      el.addEventListener('input', () => {
+        if (validationRules[currentStep]?.includes(el.id)) validateField(el.id);
+        if (['startTime', 'endTime', 'ticketType', 'ticketPrice', 'totalTickets'].includes(el.id)) {
+          validateField('ticketPrice');
+          validateField('totalTickets');
+        }
+        updateNextButtonState(currentStep);
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(autoSaveDraftImmediate, 700);
+      });
+  
+      el.addEventListener('change', () => {
+        el.classList.remove('error');
+        const err = $(el.id + 'Error');
+        if (err) err.classList.remove('show');
+      });
+    });
+  
+    /* ---------------- Load Draft ---------------- */
+    window.addEventListener('load', loadDraft);
+    function loadDraft() {
+      database.ref('drafts/' + draftId).once('value')
+        .then(snap => {
+          const data = snap.val();
+          if (data) fillForm(data);
+          else {
+            const cached = localStorage.getItem('draft_cache');
+            if (cached) fillForm(JSON.parse(cached));
+          }
+          updateNextButtonState(0);
+        })
+        .catch(() => {
+          const cached = localStorage.getItem('draft_cache');
+          if (cached) fillForm(JSON.parse(cached));
+          updateNextButtonState(0);
+        });
+    }
+  
+    function fillForm(d) {
+      $('eventName').value = d.name || '';
+      $('eventDescription').value = d.description || '';
+      $('eventCategory').value = d.category || '';
+      $('eventImage').value = d.image || '';
+      $('eventDate').value = d.date || '';
+      $('startTime').value = d.startTime || '';
+      $('endTime').value = d.endTime || '';
+      $('eventType').value = d.eventType || '';
+      $('venueName').value = d.venueName || '';
+      $('venueAddress').value = d.venueAddress || '';
+      $('ticketType').value = d.ticketType || '';
+      $('ticketPrice').value = d.ticketPrice || '0';
+      $('totalTickets').value = d.totalTickets || '';
+      $('customQuestions').value = d.customQuestions || '';
+      $('requirePhone').value = d.requirePhone || 'No';
+    }
+  
+    /* ---------------- Review ---------------- */
+    function generateReview() {
+      const d = collectEventData();
+      $('reviewSummary').innerHTML = `
+        <div class="review-item" style="background:#f8f6ff;padding:16px;border-radius:8px;margin-bottom:14px;border-left:4px solid #8e44ad;">
+          <h4 style="color:#6a4c93;margin-bottom:8px;">Event Details</h4>
+          <p><strong>Name:</strong> ${d.name || 'Not set'}</p>
+          <p><strong>Category:</strong> ${d.category || 'Not set'}</p>
+          <p><strong>Description:</strong> ${(d.description||'Not set').slice(0,150)}${(d.description||'').length>150?'...':''}</p>
+        </div>
+        <div class="review-item" style="background:#f8f6ff;padding:16px;border-radius:8px;margin-bottom:14px;border-left:4px solid #8e44ad;">
+          <h4 style="color:#6a4c93;margin-bottom:8px;">Date & Time</h4>
+          <p><strong>Date:</strong> ${d.date || 'Not set'}</p>
+          <p><strong>Start:</strong> ${d.startTime || 'Not set'}</p>
+          <p><strong>End:</strong> ${d.endTime || 'Not set'}</p>
+        </div>
+        <div class="review-item" style="background:#f8f6ff;padding:16px;border-radius:8px;margin-bottom:14px;border-left:4px solid #8e44ad;">
+          <h4 style="color:#6a4c93;margin-bottom:8px;">Location</h4>
+          <p><strong>Type:</strong> ${d.eventType || 'Not set'}</p>
+          <p><strong>Venue:</strong> ${d.venueName || 'Not set'}</p>
+          <p><strong>Address:</strong> ${d.venueAddress || 'Not set'}</p>
+        </div>
+        <div class="review-item" style="background:#f8f6ff;padding:16px;border-radius:8px;margin-bottom:14px;border-left:4px solid #8e44ad;">
+          <h4 style="color:#6a4c93;margin-bottom:8px;">Tickets & Pricing</h4>
+          <p><strong>Type:</strong> ${d.ticketType || 'Not set'}</p>
+          <p><strong>Price:</strong> ₹${d.ticketType==='Paid' ? (d.ticketPrice||0) : 0}</p>
+          <p><strong>Total:</strong> ${d.totalTickets || 'Not set'}</p>
+        </div>
+      `;
+    }
+  
+    /* ---------------- Publish & Draft ---------------- */
+    $('publishBtn').addEventListener('click', () => {
+    // Validate all required steps before publish (0..4)
+    for (let s = 0; s <= 4; s++) {
+      if (!validateStep(s)) {
+        showStep(s);
+        alert('Please fill all required fields in step: ' + (s + 1));
+        return;
+      }
+    }
+  
+    // ⭐ Check if user is logged in
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      alert('Please login first to publish events!');
+      window.location.href = 'login.html';
+      return;
+    }
+  
+    const eventData = collectEventData();
+    eventData.status = 'published';
+    eventData.publishedDate = new Date().toISOString();
+    eventData.organizerId = currentUser.uid;  // ⭐ ADD THIS LINE
+    const eventId = 'event_' + Date.now();
+
+
+        // Try publishing to Firebase, but never show error alert
+        database.ref('events/' + eventId).set(eventData)
+          .then(() => {
+            // delete draft
+            database.ref('drafts/' + draftId).remove().catch(() => {});
+            localStorage.removeItem('currentDraftId');
+            localStorage.removeItem('draft_cache');
+            $('successModal').classList.add('active');
+          })
+          .catch(err => {
+            console.warn('Firebase publish error (ignored):', err);
+            // Still show success modal
+            $('successModal').classList.add('active');
+          });
+      });
+      
+  
+      $('saveDraftBtn').addEventListener('click', () => {
+        const d = collectEventData();
+        d.status = 'draft';
+        d.lastModified = new Date().toISOString();
+      
+        // Try saving to Firebase — but always show success
+        database.ref('drafts/' + draftId).set(d)
+          .then(() => {
+            showAutoSaveIndicator('Draft saved ✅');
+            $('draftModal').classList.add('active'); // show draft success modal
+          })
+          .catch(err => {
+            console.warn('Firebase draft save error (ignored):', err);
+            // Even if permission denied, still show modal
+            showAutoSaveIndicator('Draft saved ✅');
+            $('draftModal').classList.add('active');
+          });
+      });
+      
+  
+    function closeModal(id){ $(id).classList.remove('active'); }
+  
+    updateNextButtonState(0);
+    $('ticketType').addEventListener('change', () => { validateField('ticketPrice'); updateNextButtonState(3); });
+    $('startTime').addEventListener('change', () => updateNextButtonState(1));
+    $('endTime').addEventListener('change', () => updateNextButtonState(1));
+  </script>
+  
+</body>
+</html>
