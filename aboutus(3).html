@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - TalentConnect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reset */
+    * {
+      margin:0; 
+      padding:0; 
+      box-sizing:border-box; 
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+    body {
+      background:#fff; 
+      color:#333; 
+      line-height:1.6;}
+
+    /* Navbar */
+    header {
+      position:fixed; top:0; left:0; width:100%;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:15px 40px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.1);
+      z-index:1000;
+    }
+    header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size:22px; font-weight:bold; color:#5b21b6;
+    }
+    header .logo-img {
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    
+    /* Desktop Navigation */
+    header nav {display:flex; align-items:center;}
+    header nav a {margin:0 15px; text-decoration:none; color:#333; font-weight:500; white-space: nowrap;}
+    header nav a:hover {color:#f97316;}
+    
+    /* Auth buttons with hover effects */
+    header .auth {display:flex; align-items:center; gap: 15px;}
+    header .auth button {
+      padding:10px 20px; 
+      border:none; 
+      border-radius:50px; 
+      cursor:pointer; 
+      font-weight:600;
+      font-size:16px;
+      transition: all 0.3s ease;
+    }
+    
+    header .auth .login {
+      background: transparent;
+      color: #5b21b6;
+      border: 2px solid #5b21b6;
+    }
+    
+    header .auth .login:hover {
+      background: #5b21b6;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(91, 33, 182, 0.3);
+    }
+    
+    header .auth .signup {
+      background: #f97316;
+      color: white;
+      border: 2px solid #f97316;
+    }
+    
+    header .auth .signup:hover {
+      background: #ff8c3f;
+      border-color: #ff8c3f;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(249, 115, 22, 0.3);
+    }
+
+    /* Mobile menu button */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+    }
+    
+    .menu-toggle span {
+      width: 100%;
+      height: 3px;
+      background-color: #5b21b6;
+      margin: 2px 0;
+      transition: all 0.3s ease;
+    }
+    
+    /* Mobile menu */
+    .mobile-menu {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      background: white;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      display: none;
+      flex-direction: column;
+      z-index: 999;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .mobile-menu.active {
+      transform: translateY(0);
+      display: flex;
+    }
+    
+    .mobile-menu a {
+      padding: 15px 0;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .mobile-menu a:hover {
+      color: #f97316;
+    }
+    
+    .mobile-auth {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .mobile-auth button {
+      padding: 12px;
+      border: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    
+    .mobile-auth .login {
+      background: transparent;
+      color: #5b21b6;
+      border: 2px solid #5b21b6;
+    }
+    
+    .mobile-auth .signup {
+      background: #f97316;
+      color: white;
+      border: 2px solid #f97316;
+    }
+
+    /* Page Content */
+    .page-content {
+      margin-top: 80px;
+      padding: 40px 0;
+    }
+
+    /* Hero Section */
+    .about-hero {
+      background: linear-gradient(rgba(91,33,182,0.9), rgba(91,33,182,0.9)), url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2069&auto=format&fit=crop') no-repeat center/cover;
+      padding: 100px 40px;
+      text-align: center;
+      color: white;
+    }
+    
+    .about-hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .about-hero p {
+      font-size: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    /* Section Styling */
+    .section {
+      padding: 70px 40px;
+    }
+    
+    .section h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #5b21b6;
+      text-align: center;
+    }
+    
+    .section h2 span {
+      color: #f97316;
+    }
+    
+    .section p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+    
+    .section-dark {
+      background-color: #f9fafb;
+    }
+    
+    .section-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Mission Section */
+    .mission-section {
+      text-align: center;
+    }
+    
+    .mission-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      margin-top: 50px;
+    }
+    
+        .how-it-works {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 50px;
+      margin-top: 50px;
+    }
+    
+    .how-column h3 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      color: #5b21b6;
+      display: flex;
+      align-items: center;
+    }
+    
+    .how-column h3 i {
+      margin-right: 15px;
+      font-size: 30px;
+    }
+    
+    .step-list {
+      list-style: none;
+    }
+    
+    .step-list li {
+      margin-bottom: 25px;
+      padding-left: 40px;
+      position: relative;
+    }
+    
+    .step-list li:before {
+      content: "•";
+      color: #5b21b6;
+      font-size: 24px;
+      position: absolute;
+      left: 0;
+      top: -2px;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 50px;
+    }
+    
+    .feature-item {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    
+    .feature-item:hover {
+      transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+      font-size: 40px;
+      color: #5b21b6;
+      margin-bottom: 20px;
+    }
+    
+    .feature-item h3 {
+      color: #5b21b6;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+    
+    .feature-item p {
+      color: #666;
+    }
+
+    /* Contact Section */
+    .contact-section {
+      text-align: center;
+    }
+    
+    .contact-info {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      margin-top: 50px;
+    }
+    
+    .contact-item {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    
+    .contact-icon {
+      font-size: 40px;
+      color: #5b21b6;
+      margin-bottom: 15px;
+    }
+    
+    .contact-item h3 {
+      color: #5b21b6;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+    
+    .contact-item p {
+      color: #666;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      text-align: center;
+      padding: 80px 40px;
+      background: linear-gradient(rgba(91,33,182,0.9), rgba(91,33,182,0.9)), url('https://images.unsplash.com/photo-1519677100203-a0e668c92439') no-repeat center/cover;
+      color: #fff;
+    }
+    
+    .cta-section h2 {
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    
+    .cta-section p {
+      max-width: 700px;
+      margin: 0 auto 30px;
+      font-size: 18px;
+      opacity: 0.9;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .cta-button {
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .cta-button.primary {
+      background: #f97316;
+      color: #fff;
+      border: none;
+    }
+    
+    .cta-button.primary:hover {
+      background: #fb923c;
+    }
+    
+    .cta-button.secondary {
+      background: transparent;
+      color: #fff;
+      border: 2px solid #fff;
+    }
+    
+    .cta-button.secondary:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Footer */
+    footer {background:#5b21b6; color:#fff; padding:60px 40px 30px;}
+    footer .grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:30px;}
+    footer h3 {font-size:24px; margin-bottom:15px;}
+    footer h4 {font-size:18px; margin-bottom:15px;}
+    footer a {color:#fff; text-decoration:none; display:block; margin-bottom:10px; opacity:0.9; transition:opacity 0.3s;}
+    footer a:hover {opacity:1; text-decoration:underline;}
+    footer p {margin-bottom:10px; opacity:0.9;}
+
+    /* Responsive styles */
+    @media (max-width: 1024px) {
+      header {padding:15px 20px;}
+      .section {padding:60px 20px;}
+      .mission-stats,
+      .features-grid,
+      .contact-info {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 900px) {
+      header nav,
+      header .auth {
+        display: none;
+      }
+      
+      .menu-toggle {
+        display: flex;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      header {padding:15px;}
+      
+      .about-hero h1 {
+        font-size: 36px;
+      }
+      
+      .about-hero p {
+        font-size: 18px;
+      }
+      
+      .how-it-works {
+        grid-template-columns: 1fr;
+      }
+      
+      .mission-stats,
+      .features-grid,
+      .contact-info {
+        grid-template-columns: 1fr;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    
+    @media (min-width: 901px) {
+      .mobile-menu {
+        display: none !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .about-hero h1 {font-size:28px;}
+      .section h2 {font-size:26px;}
+      
+      header {
+        padding: 10px;
+      }
+      
+      .auth {
+        gap: 8px;
+      }
+      
+      .auth button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div class="logo">
+      <div class="logo-img">
+        <img src="logo.jpeg" alt="Logo" style="width:35px; height: 35px;">
+      </div>
+      <span>TalentConnect</span>
+    </div>
+    
+    <nav>
+      <a href="Index(1).html">Home</a>
+      <a href="browseevent(2).html">Browse Events</a>
+      <a href="aboutus(3).html">About Us</a>
+      <a href="Contactus(4).html">Contact</a>
+      <a href="host_event(5).html"  style="color: #f97316; font-weight: bold;">Host Your Event</a>
+    </nav>
+    
+  <div class="auth">
+  <button class="login" onclick="location.href='login(6).html'">Login</button>
+  <button class="signup" onclick="location.href='login(6).html'">Sign Up</button>
+</div>
+
+    <div class="menu-toggle" id="mobile-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </header>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu-container">
+    <a href="#">Home</a>
+    <a href="#">Events</a>
+    <a href="#" style="color: #f97316; font-weight: bold;">About Us</a>
+    <a href="#">Contact</a>
+    <a href="#">Host Your Event</a>
+    
+    <div class="mobile-auth">
+      <button class="login">Login</button>
+      <button class="signup">Sign Up</button>
+    </div>
+  </div>
+
+  <!-- Page Content -->
+  <div class="page-content">
+    
+    <!-- Hero Section -->
+    <section class="about-hero">
+      <h1>About TalentConnect</h1>
+      <p>Your Gateway to Amazing Events & Effortless Event Organization</p>
+    </section>
+
+    <!-- Welcome Section -->
+    <section class="section">
+      <div class="section-content">
+        <h2>Welcome to <span>TalentConnect</span></h2>
+        <p>Welcome to TalentConnect - the ultimate event booking platform where discovering great events is effortless, and organizing your own is simple and powerful.</p>
+        
+     
+    <!-- What We Do Section -->
+    <section class="section section-dark">
+      <div class="section-content">
+        <h2>What <span>We Do</span></h2>
+        
+        <div class="features-grid">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3>Event Booking Made Simple</h3>
+            <p>Browse and book tickets for amazing local events - from intimate concerts and cultural shows to workshops and parties. Everything you need is just a few clicks away.</p>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-microphone"></i>
+            </div>
+            <h3>Event Organization Made Easy</h3>
+            <p>Want to organize your own event? Whether you're an artist planning a concert, hosting a workshop, or organizing any celebration - create your event, set your price, and let customers book instantly.</p>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-bullhorn"></i>
+            </div>
+            <h3>No Marketing Headaches</h3>
+            <p>No banners, no flyers, no complicated marketing needed. Our platform is your advertising, reaching thousands of potential attendees.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section">
+      <div class="section-content">
+        <h2>How It <span>Works</span></h2>
+        
+        <div class="how-it-works">
+          <div class="how-column">
+            <h3><i class="fas fa-ticket-alt"></i> For Event-Goers</h3>
+            
+            <ul class="step-list">
+              <li>Discover local events happening around you</li>
+              <li>Book tickets instantly with secure payment processing</li>
+              <li>Get confirmations immediately with all event details</li>
+              <li>Rate and review your experiences</li>
+            </ul>
+          </div>
+          
+          <div class="how-column">
+            <h3><i class="fas fa-clipboard-list"></i> For Event Organizers</h3>
+            
+            <ul class="step-list">
+              <li>Create events in minutes - set date, price, capacity, description</li>
+              <li>Publish instantly to thousands of potential attendees</li>
+              <li>Manage bookings effortlessly - track sales, attendee lists, payments</li>
+              <li>Perfect for artists - musicians, performers, and creators hosting their own shows</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="section section-dark mission-section">
+      <div class="section-content">
+        <h2>Our <span>Mission</span></h2>
+        <p>To make event discovery and organization effortless while empowering anyone to become a successful event creator.</p>
+        <p>We're creating a vibrant ecosystem where:</p>
+        
+        <div class="features-grid">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <h3>Great Events Find Audience</h3>
+            <p>Great events find their perfect audience through our platform</p>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Organizers Succeed</h3>
+            <p>Event organizers succeed without expensive marketing</p>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-music"></i>
+            </div>
+            <h3>Artists Thrive</h3>
+            <p>Artists can host their own shows and build direct fan relationships</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="section">
+      <div class="section-content">
+        <h2>Why Choose <span>TalentConnect?</span></h2>
+        
+        <div class="features-grid">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Complete Event Solution</h3>
+            <p>Book events and organize events - everything in one powerful platform.</p>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <h3>Cost-Effective</h3>
+            <p>Eliminate expensive advertising costs. Digital promotion reaches more people at a fraction of traditional marketing costs.</p>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Secure & Reliable</h3>
+            <p>Professional payment processing, event management tools, and trusted booking system.</p>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <h3>Empowers Creators</h3>
+            <p>Artists and organizers get direct access to audiences without middlemen or expensive marketing campaigns.</p>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>User-Friendly</h3>
+            <p>Intuitive design that works perfectly on phones, tablets, and computers.</p>
+          </div>
+          
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="fas fa-gem"></i>
+            </div>
+            <h3>Quality Experience</h3>
+            <p>We're committed to providing the best experience for both event organizers and attendees.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="section section-dark">
+      <div class="section-content">
+        <h2>Our <span>Vision</span></h2>
+        <p>To become the go-to platform for all event-related needs - where booking a concert ticket is as easy as ordering food, and organizing an event is as simple as posting a photo.</p>
+        <p>We're building more than a platform; we're creating a community where entertainment thrives, creativity is celebrated, and every event becomes a memorable experience.</p>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <h2>Join Our <span>Community</span></h2>
+      <p>Whether you're looking to attend amazing events or organize your own celebration - you're welcome here.</p>
+      <p>Ready to discover your next great experience or share your event with the world?</p>
+      <div class="cta-buttons">
+        <button class="cta-button primary">Browse Events</button>
+        <button class="cta-button secondary">Host an Event</button>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section contact-section">
+      <div class="section-content">
+        <h2>Get In <span>Touch</span></h2>
+        <p>Questions? Ideas? We'd love to hear from you!</p>
+        
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <h3>Email</h3>
+            <p>info@talentconnect.com</p>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-phone"></i>
+            </div>
+            <h3>Phone</h3>
+            <p>+91 9876543210</p>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h3>Location</h3>
+            <p>Based in Rajpura, India</p>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+            <h3>Serving</h3>
+            <p>Local communities everywhere</p>
+          </div>
+        </div>
+        
+        <p style="margin-top: 40px; font-style: italic;">Join the future of event entertainment - simple, digital, and creator-driven.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="grid">
+      <div>
+        <h3>TalentConnect</h3>
+        <p>Where talent meets opportunity</p>
+      </div>
+      <div>
+        <h4>For Event Hosts</h4>
+        <a href="#">Create an Event</a>
+        <a href="#">Getting Started Guides</a>
+        <a href="#">Pricing</a>
+       
+      </div>
+      <div>
+        <h4>For Attendees</h4>
+        <a href="#">Browse Events</a>
+        <a href="#">My Tickets</a>
+        <a href="#">Event Calendar</a>
+    
+      </div>
+      <div>
+        <h4>Support</h4>
+        <a href="#">Contact Us</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:40px; opacity:0.7;">© 2025 TalentConnect. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Toggle mobile menu
+    document.getElementById('mobile-menu').addEventListener('click', function() {
+      const mobileMenu = document.getElementById('mobile-menu-container');
+      mobileMenu.classList.toggle('active');
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const mobileMenu = document.getElementById('mobile-menu-container');
+      const menuToggle = document.getElementById('mobile-menu');
+      
+      if (!menuToggle.contains(event.target) && !mobileMenu.contains(event.target)) {
+        mobileMenu.classList.remove('active');
+      }
+    });
+  </script>
+
+</body>
+</html>

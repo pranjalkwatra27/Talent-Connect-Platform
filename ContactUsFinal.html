@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - TalentConnect</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reset */
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+    body {background:#fff; color:#333; line-height:1.6;}
+
+    /* Navbar */
+    header {
+      position:fixed; top:0; left:0; width:100%;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:15px 40px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.1);
+      z-index:1000;
+    }
+    header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size:22px; font-weight:bold; color:#5b21b6;
+    }
+    header .logo-img {
+      width: 35px;
+      height: 35px;
+      background: linear-gradient(135deg, #5b21b6, #f97316);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+    header nav {display:flex; align-items:center;}
+    header nav a {margin:0 15px; text-decoration:none; color:#333; font-weight:500; white-space: nowrap; cursor: pointer;}
+    header nav a:hover {color:#f97316;}
+    
+    /* Mobile menu button */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+    
+    .menu-toggle span {
+      width: 100%;
+      height: 3px;
+      background-color: #333;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+    
+    /* Auth buttons with hover effects */
+    header .auth {display:flex; align-items:center; gap: 15px;}
+    header .auth button {
+      padding:10px 20px; 
+      border:none; 
+      border-radius:50px; 
+      cursor:pointer; 
+      font-weight:600;
+      font-size:16px;
+      transition: all 0.3s ease;
+    }
+    
+    header .auth .login {
+      background: transparent;
+      color: #5b21b6;
+      border: 2px solid #5b21b6;
+    }
+    
+    header .auth .login:hover {
+      background: #5b21b6;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(91, 33, 182, 0.3);
+    }
+    
+    header .auth .signup {
+      background: #f97316;
+      color: white;
+      border: 2px solid #f97316;
+    }
+    
+    header .auth .signup:hover {
+      background: #ff8c3f;
+      border-color: #ff8c3f;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(249, 115, 22, 0.3);
+    }
+
+    /* Mobile menu styles */
+    .mobile-auth {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+      padding: 20px;
+      width: 100%;
+    }
+    
+    .mobile-auth button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    
+    .mobile-auth .login {
+      background: transparent;
+      color: #5b21b6;
+      border: 2px solid #5b21b6;
+    }
+    
+    .mobile-auth .signup {
+      background: #f97316;
+      color: white;
+      border: 2px solid #f97316;
+    }
+
+    /* Contact Page Specific Styles */
+    .contact-hero {
+      background: linear-gradient(rgba(91,33,182,0.85), rgba(91,33,182,0.85)), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop') no-repeat center/cover;
+      height: 40vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+      padding: 0 20px;
+      margin-top: 70px;
+    }
+    
+    .contact-hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+    
+    .contact-hero p {
+      margin: 20px 0;
+      font-size: 18px;
+      max-width: 700px;
+    }
+    
+    .contact-container {
+      padding: 70px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .contact-info h2 {
+      font-size: 32px;
+      margin-bottom: 30px;
+      color: #5b21b6;
+    }
+    
+    .contact-details {
+      margin-bottom: 40px;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 25px;
+    }
+    
+    .contact-icon {
+      font-size: 24px;
+      color: #5b21b6;
+      margin-right: 15px;
+      min-width: 30px;
+      text-align: center;
+    }
+    
+    .contact-text h3 {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    
+    .contact-text p {
+      color: #666;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: #5b21b6;
+      color: white;
+      border-radius: 50%;
+      font-size: 18px;
+      transition: all 0.3s ease;
+    }
+    
+    .social-links a:hover {
+      background: #f97316;
+      transform: translateY(-3px);
+    }
+    
+    .contact-form {
+      background: #f9fafb;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .contact-form h2 {
+      font-size: 32px;
+      margin-bottom: 30px;
+      color: #5b21b6;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #5b21b6;
+    }
+    
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .submit-btn {
+      background: #5b21b6;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    
+    .submit-btn:hover {
+      background: #7c3aed;
+    }
+    
+    .submit-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    /* Success/Error Messages */
+    .message-box {
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+    
+    .message-box.show {
+      display: block;
+    }
+    
+    .message-box.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #6ee7b7;
+    }
+    
+    .message-box.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #5b21b6;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      padding: 70px 40px;
+      background: #f9fafb;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .faq-section h2 {
+      font-size: 32px;
+      margin-bottom: 30px;
+      text-align: center;
+      color: #5b21b6;
+    }
+    
+    .faq-item {
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+    
+    .faq-question {
+      background: white;
+      padding: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .faq-answer {
+      background: white;
+      padding: 0 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    
+    .faq-answer.active {
+      padding: 20px;
+      max-height: 300px;
+    }
+    
+    .faq-question i {
+      transition: transform 0.3s ease;
+    }
+    
+    .faq-question.active i {
+      transform: rotate(180deg);
+    }
+
+    /* Footer */
+    footer {background:#5b21b6; color:#fff; padding:60px 40px 30px;}
+    footer .grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:30px;}
+    footer h3 {font-size:24px; margin-bottom:15px;}
+    footer h4 {font-size:18px; margin-bottom:15px;}
+    footer a {color:#fff; text-decoration:none; display:block; margin-bottom:10px; opacity:0.9; transition:opacity 0.3s; cursor: pointer;}
+    footer a:hover {opacity:1; text-decoration:underline;}
+    footer p {margin-bottom:10px; opacity:0.9;}
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive styles */
+    @media (max-width: 1024px) {
+      header {padding:15px 20px;}
+      .contact-container {
+        gap: 30px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      header {padding:15px;}
+      
+      .menu-toggle {
+        display: flex;
+      }
+      
+      header nav {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 80%;
+        height: 100vh;
+        background: #fff;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 80px 20px 20px;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        transition: left 0.3s ease;
+        z-index: 999;
+        overflow-y: auto;
+      }
+      
+      header nav.active {
+        left: 0;
+      }
+      
+      header nav a {
+        margin: 15px 0;
+        font-size: 18px;
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      
+      header .auth {
+        display: none;
+      }
+      
+      .mobile-auth {
+        display: flex;
+      }
+      
+      .contact-hero {
+        margin-top: 0;
+        height: auto;
+        padding: 100px 20px 60px;
+      }
+      
+      .contact-container {
+        grid-template-columns: 1fr;
+        padding: 60px 20px;
+      }
+      
+      .contact-form {
+        padding: 30px;
+      }
+      
+      .faq-section {
+        padding: 60px 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .contact-hero h1 {font-size:36px;}
+      .contact-info h2, .contact-form h2, .faq-section h2 {font-size:28px;}
+      
+      header {
+        padding: 10px;
+      }
+      
+      .logo span {
+        font-size: 18px;
+      }
+      
+      .contact-hero {
+        padding: 80px 20px 50px;
+      }
+      
+      .contact-form {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div class="logo">
+      <!-- <div class="logo-img">
+        <i class="fas fa-calendar-star"></i>
+      </div> -->
+      <img src="logo.png" style="height: 25px;">
+      <span>TalentConnect</span>
+    </div>
+    
+    <div class="menu-toggle" id="menuToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <nav id="mainNav">
+      <a href="Index.html">Home</a>
+      <a href="browseevent.html">Browse Events</a>
+      <a href="aboutus.html">About Us</a>
+      <a href="contact.html">Contact</a>
+      <a href="host_event.html" style="color: #f97316; font-weight: bold;">Host Your Event</a>
+      
+      <div class="mobile-auth">
+        <button class="login" onclick="location.href='login(6).html'">Login</button>
+        <button class="signup" onclick="location.href='login(6).html'">Sign Up</button>
+      </div>
+    </nav>
+    
+    <div class="auth" id="authSection">
+      <button class="login" onclick="location.href='login(6).html'">Login</button>
+      <button class="signup" onclick="location.href='login(6).html'">Sign Up</button>
+    </div>
+  </header>
+
+  <!-- Contact Hero Section -->
+  <section class="contact-hero">
+    <h1>Get In Touch</h1>
+    <p>We'd love to hear from you. Let us know how we can help you with your event planning needs.</p>
+  </section>
+
+  <!-- Contact Content -->
+  <div class="contact-container">
+    <div class="contact-info">
+      <h2>Contact Information</h2>
+      
+      <div class="contact-details">
+        <div class="contact-item">
+          <div class="contact-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="contact-text">
+            <h3>Our Address</h3>
+            <p>Sector 17 Plaza, Chandigarh, 160017, India</p>
+          </div>
+        </div>
+        
+        <div class="contact-item">
+          <div class="contact-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+          <div class="contact-text">
+            <h3>Phone Number</h3>
+            <p>+91 9876543210</p>
+          </div>
+        </div>
+        
+        <div class="contact-item">
+          <div class="contact-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="contact-text">
+            <h3>Email Address</h3>
+            <p>piyush919r@gmail.com</p>
+          </div>
+        </div>
+        
+        <div class="contact-item">
+          <div class="contact-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="contact-text">
+            <h3>Working Hours</h3>
+            <p>Monday - Friday: 9AM - 6PM<br>Saturday: 10AM - 4PM</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="social-links">
+        <a href="https://www.facebook.com"><i class="fab fa-facebook-f"></i></a>
+        <a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a>
+        <a href="http://instagram.com"><i class="fab fa-instagram"></i></a>
+        <a href="http://linkedin.com"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+    
+    <div class="contact-form">
+      <h2>Send Us a Message</h2>
+      <!-- ...existing code... -->
+<!-- ...existing code... -->
+      
+      <!-- Success/Error Message -->
+      <div class="message-box" id="messageBox"></div>
+      
+      <form id="contactForm">
+        <!-- ⚠ IMPORTANT: Replace YOUR_ACCESS_KEY_HERE with your actual Web3Forms key -->
+        <!-- Get it from: https://web3forms.com -->
+        <input type="hidden" name="access_key" value="48caca13-e946-478d-9acf-ae70cb24ee1d">
+        
+        <!-- Optional: Customize email subject -->
+        <input type="hidden" name="subject" value="New Contact Form Submission from TalentConnect">
+        
+        <!-- Optional: Redirect setting -->
+        <input type="hidden" name="redirect" value="false">
+        
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" placeholder="Your Name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="Your Email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="user_subject">Subject</label>
+          <input type="text" id="user_subject" name="user_subject" placeholder="Subject" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn" id="submitBtn">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    
+    <div class="faq-item">
+      <div class="faq-question">
+        How do I create an event on TalentConnect?
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>To create an event, simply sign up for a host account, click on "Host Your Event" and follow the step-by-step process to add your event details, set ticket prices, and publish your event.</p>
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question">
+        What payment methods do you accept?
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>We accept all major credit/debit cards, net banking, UPI, and popular digital wallets like Paytm, Google Pay, and PhonePe.</p>
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question">
+        How can I contact customer support?
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>Our customer support team is available via email at piyush919r@gmail.com or by phone at +91 9876543210 during business hours. You can also use the contact form on this page.</p>
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question">
+        Can I get a refund for my tickets?
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-answer">
+        <p>Refund policies vary by event. Please check the specific event's refund policy. Generally, refunds are available if requested at least 48 hours before the event, unless otherwise stated.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="grid">
+      <div>
+        <h3>TalentConnect</h3>
+        <p>Where talent meets opportunity.</p>
+      </div>
+      <div>
+        <h4>For Event Hosts</h4>
+        <a>Create an Event</a>
+        <a>Getting Started Guide</a>
+        <a>Pricing</a>
+      </div>
+      <div>
+        <h4>For Attendees</h4>
+        <a>Browse Events</a>
+        <a>My Tickets</a>
+        <a>Event Calendar</a>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <a>Contact Us</a>
+        <a>Privacy Policy</a>
+        <a>Terms of Service</a>
+      </div>
+    </div>
+    <p style="text-align:center; margin-top:40px; opacity:0.7;">©️ 2025 TalentConnect. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // ================================
+    // TOGGLE MOBILE MENU
+    // ================================
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+  
+    menuToggle.addEventListener('click', function() {
+      mainNav.classList.toggle('active');
+  
+      // Animate hamburger icon
+      const spans = menuToggle.querySelectorAll('span');
+      if (mainNav.classList.contains('active')) {
+        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        spans[1].style.opacity = '0';
+        spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+      } else {
+        spans[0].style.transform = 'none';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'none';
+      }
+    });
+  
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!menuToggle.contains(event.target) && !mainNav.contains(event.target)) {
+        mainNav.classList.remove('active');
+        const spans = menuToggle.querySelectorAll('span');
+        spans[0].style.transform = 'none';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'none';
+      }
+    });
+  
+    // ================================
+    // FAQ TOGGLE FUNCTIONALITY
+    // ================================
+    const faqQuestions = document.querySelectorAll('.faq-question');
+  
+    faqQuestions.forEach(question => {
+      question.addEventListener('click', () => {
+        const answer = question.nextElementSibling;
+        const isActive = answer.classList.contains('active');
+  
+        document.querySelectorAll('.faq-answer').forEach(ans => ans.classList.remove('active'));
+        document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('active'));
+  
+        if (!isActive) {
+          answer.classList.add('active');
+          question.classList.add('active');
+        }
+      });
+    });
+  
+    
+  </script>
+   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="main.js"></script>
+
+</body>
+</html>
