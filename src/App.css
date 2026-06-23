@@ -1,0 +1,22 @@
+/* Minimal App styles used by `src/App.jsx` */
+.logo {
+  height: 6rem;
+  padding: 1rem;
+  will-change: transform;
+}
+
+.logo.react {
+  filter: hue-rotate(120deg);
+}
+
+.card {
+  padding: 2rem;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  margin: 1rem 0;
+}
+
+.read-the-docs {
+  color: #6b7280;
+}
