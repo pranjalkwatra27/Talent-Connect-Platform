@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './components/context/AuthContext';
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // Core pages
 import Home from './pages/Home';
@@ -36,8 +37,9 @@ import './components/styles/global.css';
 function AppContent() {
   return (
     <div className="app" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <ScrollToTop />
       <Header />
-      <main style={{ flex: 1 }}>
+      <main style={{ flex: 1, width: '100%' }}>
         <Routes>
           {/* Core routes */}
           <Route path="/" element={<Home />} />
@@ -73,7 +75,7 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <AppContent />
       </AuthProvider>

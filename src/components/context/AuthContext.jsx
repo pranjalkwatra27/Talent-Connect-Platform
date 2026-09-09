@@ -41,8 +41,6 @@ export const AuthProvider = ({ children }) => {
       const data = await api.register({ name: displayName, email, password, role, city, phone });
       setUser(data);
       return data;
-    } catch (err) {
-      throw err;
     } finally {
       setLoading(false);
     }
@@ -54,8 +52,6 @@ export const AuthProvider = ({ children }) => {
       const data = await api.login(email, password);
       setUser(data);
       return data;
-    } catch (err) {
-      throw err;
     } finally {
       setLoading(false);
     }
@@ -67,32 +63,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateProfile = async (profileData) => {
-    try {
-      const updatedUser = await api.updateUserProfile(profileData);
-      setUser(updatedUser);
-      return updatedUser;
-    } catch (err) {
-      throw err;
-    }
+    const updatedUser = await api.updateUserProfile(profileData);
+    setUser(updatedUser);
+    return updatedUser;
   };
 
   const verifyArtist = async () => {
-    try {
-      await api.submitVerification();
-      setUser(prev => prev ? { ...prev, isVerified: true } : null);
-    } catch (err) {
-      throw err;
-    }
+    await api.submitVerification();
+    setUser(prev => prev ? { ...prev, isVerified: true } : null);
   };
 
   const upgradeToArtist = async () => {
-    try {
-      const updatedUser = await api.upgradeToArtist();
-      setUser(updatedUser);
-      return updatedUser;
-    } catch (err) {
-      throw err;
-    }
+    const updatedUser = await api.upgradeToArtist();
+    setUser(updatedUser);
+    return updatedUser;
   };
 
   const value = {

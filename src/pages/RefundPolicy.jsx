@@ -1,17 +1,39 @@
 const RefundPolicy = () => (
-  <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+  <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
+    {/* ── UNIFIED HERO HEADER ── */}
     <section style={{
-      background: 'linear-gradient(135deg,var(--primary),var(--secondary))',
-      padding: '100px 24px 70px', textAlign: 'center', color: 'white'
+      background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+      padding: '120px 24px 60px',
+      borderBottom: '1px solid rgba(255,255,255,0.1)',
+      textAlign: 'center'
     }}>
-      <h1 style={{ fontSize: 'clamp(2rem,4vw,2.8rem)', fontWeight: 800, marginBottom: '12px' }}>Refund Policy 💸</h1>
-      <p style={{ opacity: 0.9, maxWidth: '560px', margin: '0 auto', fontSize: '1rem' }}>
-        We believe in a fair and transparent refund process. Please read our policy carefully.
-      </p>
-      <p style={{ opacity: 0.7, fontSize: '0.85rem', marginTop: '16px' }}>Last Updated: June 2026</p>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: '8px',
+          background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+          borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+          fontWeight: 700, marginBottom: '20px'
+        }}>
+          <span style={{ color: '#10b981' }}>●</span> Fair & Transparent Refunds
+        </div>
+        <h1 style={{
+          color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+          fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em',
+          lineHeight: 1.2
+        }}>
+          Refund Policy
+        </h1>
+        <p style={{
+          color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+          maxWidth: '700px', margin: '0 auto', lineHeight: 1.6
+        }}>
+          We believe in complete transparency and customer trust. Read how advance refunds and artist claims work.
+        </p>
+      </div>
     </section>
 
-    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '60px 24px 80px' }}>
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '48px 24px 80px' }}>
       {[
         {
           title: '1. Advance Payment',

@@ -58,7 +58,7 @@ const Header = () => {
     <header className="header">
       <Link to="/" className="logo-container">
         <span className="logo-text">Talent</span>
-        <img src="/logo.svg" alt="TalentConnect Logo" />
+        <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="TalentConnect Logo" />
         <span className="logo-text">Connect</span>
       </Link>
       
@@ -81,11 +81,9 @@ const Header = () => {
           <>
             <Link to="/" className={isActive('/') ? 'active' : ''} onClick={() => setMenuOpen(false)}>Home</Link>
             <Link to="/browse" className={isActive('/browse') ? 'active' : ''} onClick={() => setMenuOpen(false)}>Explore Talent</Link>
+            <Link to="/about" className={isActive('/about') ? 'active' : ''} onClick={() => setMenuOpen(false)}>About Us</Link>
             {!user && (
-              <>
-                <a href="/#pricing" onClick={() => setMenuOpen(false)}>Pricing Plans</a>
-                <Link to="/login" onClick={() => setMenuOpen(false)}>Become a Partner</Link>
-              </>
+              <Link to="/login?signup=true" onClick={() => setMenuOpen(false)}>Become a Partner</Link>
             )}
             {user && (
               <Link to="/bookings" className={isActive('/bookings') ? 'active' : ''} onClick={() => setMenuOpen(false)}>My Bookings</Link>

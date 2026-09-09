@@ -188,14 +188,43 @@ const HostEvent = () => {
   const progressPercent = ((currentStep + 1) / steps.length) * 100;
 
   return (
-    <div style={{ paddingTop: '100px' }}>
-      <div className="progress-bar-host">
-        <div className="progress-bar-fill-host" style={{ width: `${progressPercent}%` }}></div>
-      </div>
+    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
+      {/* ── UNIFIED HERO HEADER ── */}
+      <section style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+        padding: '120px 24px 50px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        textAlign: 'center'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+            borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+            fontWeight: 700, marginBottom: '20px'
+          }}>
+            <span style={{ color: '#10b981' }}>●</span> Instant Artist Onboarding & Listing
+          </div>
+          <h1 style={{
+            color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+            fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em',
+            lineHeight: 1.2
+          }}>
+            List Your Service Profile
+          </h1>
+          <p style={{
+            color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            maxWidth: '700px', margin: '0 auto', lineHeight: 1.6
+          }}>
+            Set up your service details in simple guided steps — changes auto-save automatically.
+            {autoSaveMessage && <span style={{ color: '#34d399', fontSize: '0.9rem', marginLeft: '12px', fontWeight: 700 }}>✓ {autoSaveMessage}</span>}
+          </p>
+        </div>
+      </section>
 
-      <div className="page-header-host">
-        <h1>List Your Service Profile</h1>
-        <p>Set up your service details in simple guided steps — everything auto-saves</p>
+      <div className="progress-bar-host" style={{ position: 'sticky', top: '70px', zIndex: 10 }}>
+        <div className="progress-bar-fill-host" style={{ width: `${progressPercent}%` }}></div>
       </div>
 
       <div className="main-host">

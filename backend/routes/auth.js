@@ -65,6 +65,10 @@ router.post('/register', async (req, res) => {
         phone: user.phone,
         avatar: user.avatar,
         isVerified: user.isVerified,
+        digilockerVerified: user.digilockerVerified,
+        aiVerificationScore: user.aiVerificationScore,
+        qualifications: user.qualifications || [],
+        certificates: user.certificates || [],
         token: generateToken(user._id),
       });
     } else {
@@ -94,6 +98,17 @@ router.post('/login', async (req, res) => {
         phone: user.phone,
         avatar: user.avatar,
         isVerified: user.isVerified,
+        emailVerified: user.emailVerified,
+        phoneVerified: user.phoneVerified,
+        docVerified: user.docVerified,
+        paymentComplete: user.paymentComplete,
+        digilockerVerified: user.digilockerVerified,
+        aiVerificationScore: user.aiVerificationScore,
+        aiVerificationSummary: user.aiVerificationSummary,
+        docVerification: user.docVerification,
+        qualifications: user.qualifications || [],
+        certificates: user.certificates || [],
+        businessInfo: user.businessInfo,
         token: generateToken(user._id),
       });
     } else {
@@ -169,6 +184,14 @@ router.put('/upgrade', protect, async (req, res) => {
       phone: user.phone,
       avatar: user.avatar,
       isVerified: user.isVerified,
+      emailVerified: user.emailVerified,
+      phoneVerified: user.phoneVerified,
+      docVerified: user.docVerified,
+      paymentComplete: user.paymentComplete,
+      digilockerVerified: user.digilockerVerified,
+      aiVerificationScore: user.aiVerificationScore,
+      qualifications: user.qualifications || [],
+      certificates: user.certificates || [],
     });
   } catch (error) {
     console.error('Upgrade Error:', error);

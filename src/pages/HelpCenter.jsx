@@ -1,5 +1,3 @@
-import { useNavigate } from 'react-router-dom';
-
 const guides = [
   {
     emoji: '🔍', title: 'How to find an artist',
@@ -29,47 +27,58 @@ const quickLinks = [
 ];
 
 const HelpCenter = () => {
-  const navigate = useNavigate();
-
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
 
-      {/* ── HERO split layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', minHeight: '400px' }}>
-        <div style={{
-          background: 'linear-gradient(135deg, #1a0533 0%, #2d1b69 100%)',
-          padding: '60px 48px', display: 'flex', flexDirection: 'column', justifyContent: 'center'
-        }}>
-          <span style={{ color: '#a78bfa', fontWeight: 700, fontSize: '0.78rem', letterSpacing: '2px', marginBottom: '14px' }}>HELP CENTER</span>
-          <h1 style={{ color: 'white', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, lineHeight: 1.25, marginBottom: '16px' }}>
-            How can we help you today?
+      {/* ── UNIFIED HERO HEADER ── */}
+      <section style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+        padding: '120px 24px 60px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        textAlign: 'center'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+            borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+            fontWeight: 700, marginBottom: '20px'
+          }}>
+            <span style={{ color: '#6366f1' }}>●</span> 24/7 Dedicated Support & Resources
+          </div>
+          <h1 style={{
+            color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+            fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em',
+            lineHeight: 1.2
+          }}>
+            How Can We Help You Today?
           </h1>
-          <p style={{ color: '#c4b5fd', lineHeight: 1.75, fontSize: '1rem', marginBottom: '28px' }}>
-            Find guides, policies, and answers. Or reach our team directly — we reply within 2 hours.
+          <p style={{
+            color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            maxWidth: '700px', margin: '0 auto 28px', lineHeight: 1.6
+          }}>
+            Find quick guides, verification steps, and policies. Or contact our customer success team directly.
           </p>
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a href="mailto:support@talentconnect.in" style={{
-              background: 'var(--primary)', color: 'white', padding: '12px 28px',
-              borderRadius: '30px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem'
-            }}>📧 Email Support</a>
+              background: 'linear-gradient(135deg, var(--primary) 0%, #4338ca 100%)',
+              color: 'white', padding: '12px 28px', borderRadius: '30px',
+              textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem',
+              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)'
+            }}>
+              📧 Email Support
+            </a>
             <a href="/faqs" style={{
               background: 'rgba(255,255,255,0.1)', color: 'white', padding: '12px 28px',
               borderRadius: '30px', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem',
-              border: '1px solid rgba(255,255,255,0.2)'
-            }}>Browse FAQs →</a>
-          </div>
-          {/* Trust bar */}
-          <div style={{ display: 'flex', gap: '24px', marginTop: '36px', flexWrap: 'wrap' }}>
-            {['⏱ 2 hr response', '✅ 98% resolved', '🌐 Hindi & English'].map(t => (
-              <div key={t} style={{ color: '#a78bfa', fontSize: '0.83rem', fontWeight: 600 }}>{t}</div>
-            ))}
+              border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(8px)'
+            }}>
+              Browse FAQs →
+            </a>
           </div>
         </div>
-        <div style={{ overflow: 'hidden', minHeight: '340px' }}>
-          <img src="/help_hero.jpg" alt="TalentConnect support"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
-        </div>
-      </div>
+      </section>
 
       {/* ── QUICK LINKS ── */}
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '64px 24px 0' }}>

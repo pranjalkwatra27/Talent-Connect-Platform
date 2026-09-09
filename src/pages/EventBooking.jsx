@@ -31,6 +31,7 @@ const EventBooking = () => {
       return;
     }
     loadArtistService();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user]);
 
   useEffect(() => {
@@ -95,6 +96,12 @@ const EventBooking = () => {
 
     if (!selectedPackage) {
       alert('Please select a package first');
+      return;
+    }
+
+    const cleanedPhone = (formData.phone || '').replace(/\D/g, '').slice(-10);
+    if (!/^[6-9]\d{9}$/.test(cleanedPhone)) {
+      alert('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.');
       return;
     }
 

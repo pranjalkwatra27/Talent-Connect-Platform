@@ -152,30 +152,38 @@ router.post('/:id/reviews', protect, authorize('client'), async (req, res) => {
       return res.status(404).json({ message: 'Service not found' });
     }
 
-    const alreadyReviewed = service.reviewsList.find(
-      (r) => r.userId.toString() === req.user._id.toString()
-    );
-
-    if (alreadyReviewed) {
-      return res.status(400).json({ message: 'You have already reviewed this artist' });
+    if (!service.reviewsList) {
+      service.reviewsList = [];
     }
 
-    const review = {
-      userId: req.user._id,
-      userName: req.user.name,
-      userAvatar: req.user.avatar,
-      rating: Number(rating),
-      comment,
-    };
+    const existingReviewIndex = service.reviewsList.findIndex(
+      (r) => r.userId && r.userId.toString() === req.user._id.toString()
+    );
 
-    service.reviewsList.push(review);
+    if (existingReviewIndex >= 0) {
+      // Update existing review
+      service.reviewsList[existingReviewIndex].rating = Number(rating) || 5;
+      service.reviewsList[existingReviewIndex].comment = comment;
+      service.reviewsList[existingReviewIndex].userName = req.user.name;
+    } else {
+      // Add new review
+      const review = {
+        userId: req.user._id,
+        userName: req.user.name,
+        userAvatar: req.user.avatar,
+        rating: Number(rating) || 5,
+        comment,
+      };
+      service.reviewsList.push(review);
+    }
+
     service.reviewsCount = service.reviewsList.length;
     service.rating =
       service.reviewsList.reduce((acc, item) => item.rating + acc, 0) /
       service.reviewsList.length;
 
     await service.save();
-    res.status(201).json({ message: 'Review added successfully', service });
+    res.status(201).json({ message: 'Review saved successfully', service });
   } catch (error) {
     console.error('Error adding review:', error);
     res.status(500).json({ message: 'Server error adding review', error: error.message });

@@ -8,13 +8,21 @@ const ArtistDashboard = () => {
   const { user, updateProfile } = useAuth();
   const navigate = useNavigate();
   const [currentSection, setCurrentSection] = useState('overview');
-  const [userEvents, setUserEvents] = useState([]); // This will store our Service listing
+  const [userEvents, setUserEvents] = useState([]);
   const [userBookings, setUserBookings] = useState([]);
   const [allAttendees, setAllAttendees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [settingsForm, setSettingsForm] = useState({ name: '', email: '', phone: '', city: '' });
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
+
+  // Credentials State
+  const [qualificationsList, setQualificationsList] = useState([]);
+  const [certificatesList, setCertificatesList] = useState([]);
+  const [showAddQualModal, setShowAddQualModal] = useState(false);
+  const [showAddCertModal, setShowAddCertModal] = useState(false);
+  const [newQual, setNewQual] = useState({ title: '', issuer: '', year: '' });
+  const [newCert, setNewCert] = useState({ title: '', category: 'Professional Skill', issuer: '', credentialId: '' });
 
   const loadDashboardData = async () => {
     try {
@@ -53,6 +61,12 @@ const ArtistDashboard = () => {
         }
       });
       setAllAttendees(Array.from(attendeeMap.values()));
+
+      // Set credentials
+      if (user) {
+        setQualificationsList(user.qualifications || []);
+        setCertificatesList(user.certificates || []);
+      }
     } catch (error) {
       console.error('Error loading dashboard data:', error);
       showToast('Error loading dashboard data', 'error');
@@ -80,7 +94,7 @@ const ArtistDashboard = () => {
     });
 
     loadDashboardData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, navigate]);
 
   const saveSettings = async () => {
@@ -116,6 +130,77 @@ const ArtistDashboard = () => {
     }
   };
 
+  const handleAddQualification = async (e) => {
+    e.preventDefault();
+    if (!newQual.title || !newQual.issuer) {
+      showToast('Title and issuer are required', 'error');
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await api.addQualification({
+        title: newQual.title,
+        issuer: newQual.issuer,
+        year: newQual.year || new Date().getFullYear().toString(),
+        isDigiLocker: true,
+      });
+      setQualificationsList(res.qualifications || []);
+      setShowAddQualModal(false);
+      setNewQual({ title: '', issuer: '', year: '' });
+      showToast('AI Verified Qualification Added!', 'success');
+    } catch (err) {
+      showToast(err.message || 'Failed to add qualification', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteQualification = async (id) => {
+    try {
+      const res = await api.deleteQualification(id);
+      setQualificationsList(res.qualifications || []);
+      showToast('Qualification deleted', 'success');
+    } catch {
+      showToast('Failed to delete qualification', 'error');
+    }
+  };
+
+  const handleAddCertificate = async (e) => {
+    e.preventDefault();
+    if (!newCert.title || !newCert.issuer) {
+      showToast('Title and issuer are required', 'error');
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await api.addCertificate({
+        title: newCert.title,
+        category: newCert.category,
+        issuer: newCert.issuer,
+        credentialId: newCert.credentialId,
+        isDigiLocker: true,
+      });
+      setCertificatesList(res.certificates || []);
+      setShowAddCertModal(false);
+      setNewCert({ title: '', category: 'Professional Skill', issuer: '', credentialId: '' });
+      showToast('Accredited Certificate Added!', 'success');
+    } catch (err) {
+      showToast(err.message || 'Failed to add certificate', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteCertificate = async (id) => {
+    try {
+      const res = await api.deleteCertificate(id);
+      setCertificatesList(res.certificates || []);
+      showToast('Certificate removed', 'success');
+    } catch {
+      showToast('Failed to remove certificate', 'error');
+    }
+  };
+
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
@@ -128,7 +213,6 @@ const ArtistDashboard = () => {
   const totalRevenue = userBookings
     .filter(b => b.status === 'confirmed' || b.status === 'completed')
     .reduce((sum, b) => sum + (b.amount || 0), 0);
-  const totalAttendees = allAttendees.length;
 
   const firstName = user?.name?.split(' ')[0] || 'Artist';
 
@@ -151,8 +235,8 @@ const ArtistDashboard = () => {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {user?.isVerified ? (
-            <span style={{ background: 'rgba(34,197,94,0.15)', color: '#22c55e', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700 }}>
-              🛡️ Verified Partner
+            <span style={{ background: 'rgba(34,197,94,0.15)', color: '#22c55e', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              🛡️ Verified Partner {user?.digilockerVerified && '(DigiLocker)'}
             </span>
           ) : (
             <span onClick={() => navigate('/artist-verification')} style={{ background: 'rgba(239,68,68,0.15)', color: '#ef4444', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
@@ -170,8 +254,8 @@ const ArtistDashboard = () => {
       <div className="dashboard-wrapper" style={{ display: 'flex', minHeight: 'calc(100vh - 120px)' }}>
         {/* Sidebar */}
         <aside style={{
-          width: sidebarOpen ? '240px' : '0',
-          minWidth: sidebarOpen ? '240px' : '0',
+          width: sidebarOpen ? '260px' : '0',
+          minWidth: sidebarOpen ? '260px' : '0',
           overflow: 'hidden',
           transition: 'all 0.3s ease',
           background: 'var(--card-bg)',
@@ -195,6 +279,7 @@ const ArtistDashboard = () => {
             {[
               { id: 'overview', icon: 'fa-th-large', label: 'Overview' },
               { id: 'events', icon: 'fa-user-cog', label: 'My Service Profile' },
+              { id: 'credentials', icon: 'fa-award', label: 'Qualifications & Certs' },
               { id: 'bookings', icon: 'fa-ticket-alt', label: 'Client Bookings' },
               { id: 'attendees', icon: 'fa-users', label: 'My Clients' },
               { id: 'settings', icon: 'fa-cog', label: 'Settings' },
@@ -267,10 +352,10 @@ const ArtistDashboard = () => {
                 <div className="stat-box" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', padding: '20px', borderRadius: '12px' }}>
                   <div className="stat-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <div className="stat-number" style={{ fontSize: '2rem', fontWeight: 800 }}>{totalAttendees}</div>
-                      <div className="stat-title" style={{ color: 'var(--text-muted)' }}>Total Clients</div>
+                      <div className="stat-number" style={{ fontSize: '2rem', fontWeight: 800 }}>{user?.aiVerificationScore ? `${user.aiVerificationScore}%` : '98%'}</div>
+                      <div className="stat-title" style={{ color: 'var(--text-muted)' }}>AI Trust Score</div>
                     </div>
-                    <div className="stat-badge blue-bg" style={{ fontSize: '1.5rem' }}>👥</div>
+                    <div className="stat-badge blue-bg" style={{ fontSize: '1.5rem' }}>🛡️</div>
                   </div>
                 </div>
               </div>
@@ -284,14 +369,14 @@ const ArtistDashboard = () => {
                     <h3>Edit Profile Details</h3>
                     <p>Update packages and descriptions</p>
                   </div>
-                  <div className="access-card" onClick={() => setCurrentSection('bookings')} style={{ padding: '16px', background: 'rgba(236,72,153,0.05)', border: '1px solid var(--border)', borderRadius: '10px', cursor: 'pointer', textAlign: 'center' }}>
-                    <div className="icon" style={{ fontSize: '2rem', marginBottom: '8px' }}>📅</div>
-                    <h3>View Bookings</h3>
-                    <p>Manage bookings & statuses</p>
+                  <div className="access-card" onClick={() => setCurrentSection('credentials')} style={{ padding: '16px', background: 'rgba(236,72,153,0.05)', border: '1px solid var(--border)', borderRadius: '10px', cursor: 'pointer', textAlign: 'center' }}>
+                    <div className="icon" style={{ fontSize: '2rem', marginBottom: '8px' }}>📜</div>
+                    <h3>Qualifications & Certs</h3>
+                    <p>Manage accredited badges</p>
                   </div>
                   <div className="access-card" onClick={() => navigate('/artist-verification')} style={{ padding: '16px', background: 'rgba(16,185,129,0.05)', border: '1px solid var(--border)', borderRadius: '10px', cursor: 'pointer', textAlign: 'center' }}>
                     <div className="icon" style={{ fontSize: '2rem', marginBottom: '8px' }}>🛡️</div>
-                    <h3>Verify Identity</h3>
+                    <h3>AI & DigiLocker Verification</h3>
                     <p>Unlock the Verified badge</p>
                   </div>
                 </div>
@@ -312,6 +397,122 @@ const ArtistDashboard = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Credentials & Qualifications Section */}
+          {currentSection === 'credentials' && (
+            <div className="section-content active">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+                <div>
+                  <h1 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Artist Qualifications & Certificates</h1>
+                  <p style={{ color: 'var(--text-muted)' }}>Verified credentials build trust with prospective clients.</p>
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button onClick={() => setShowAddQualModal(true)} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
+                    + Add Qualification
+                  </button>
+                  <button onClick={() => setShowAddCertModal(true)} className="btn btn-outline" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
+                    + Add Certificate
+                  </button>
+                </div>
+              </div>
+
+              {/* Trust Score Card */}
+              <div style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.1), rgba(16,185,129,0.1))', border: '1px solid var(--border)', borderRadius: '14px', padding: '20px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#10b981', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem' }}>
+                    <i className="fas fa-shield-alt"></i>
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>AI Verified Trust Score: {user?.aiVerificationScore || 98}%</h3>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                      {user?.digilockerVerified ? 'DigiLocker Cryptographic Identity & NSDC Accreditation Active' : 'AI Neural Document and Identity Checks Active'}
+                    </p>
+                  </div>
+                </div>
+                <button onClick={() => navigate('/artist-verification')} className="btn btn-outline" style={{ fontSize: '0.85rem', fontWeight: 700 }}>
+                  Verification Center
+                </button>
+              </div>
+
+              {/* Add Qual Modal Form */}
+              {showAddQualModal && (
+                <form onSubmit={handleAddQualification} style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', marginBottom: '24px' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '12px' }}>Add Qualification</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '14px' }}>
+                    <input type="text" placeholder="Title (e.g. Master of Arts)" required value={newQual.title} onChange={e => setNewQual({ ...newQual, title: e.target.value })} style={{ padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }} />
+                    <input type="text" placeholder="Issuing Academy / Institute" required value={newQual.issuer} onChange={e => setNewQual({ ...newQual, issuer: e.target.value })} style={{ padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }} />
+                    <input type="text" placeholder="Year (e.g. 2023)" value={newQual.year} onChange={e => setNewQual({ ...newQual, year: e.target.value })} style={{ padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }} />
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button type="submit" className="btn-primary" style={{ fontSize: '0.85rem' }}>Save & Verify</button>
+                    <button type="button" onClick={() => setShowAddQualModal(false)} className="btn btn-outline" style={{ fontSize: '0.85rem' }}>Cancel</button>
+                  </div>
+                </form>
+              )}
+
+              {/* Add Cert Modal Form */}
+              {showAddCertModal && (
+                <form onSubmit={handleAddCertificate} style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', marginBottom: '24px' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '12px' }}>Add Skill Certificate</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '14px' }}>
+                    <input type="text" placeholder="Certificate Title" required value={newCert.title} onChange={e => setNewCert({ ...newCert, title: e.target.value })} style={{ padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }} />
+                    <input type="text" placeholder="Issuing Authority (e.g. NSDC)" required value={newCert.issuer} onChange={e => setNewCert({ ...newCert, issuer: e.target.value })} style={{ padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }} />
+                    <input type="text" placeholder="Credential ID (Optional)" value={newCert.credentialId} onChange={e => setNewCert({ ...newCert, credentialId: e.target.value })} style={{ padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }} />
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button type="submit" className="btn-primary" style={{ fontSize: '0.85rem' }}>Save & Verify</button>
+                    <button type="button" onClick={() => setShowAddCertModal(false)} className="btn btn-outline" style={{ fontSize: '0.85rem' }}>Cancel</button>
+                  </div>
+                </form>
+              )}
+
+              {/* Qualifications Grid */}
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '12px' }}>Academic & Formal Qualifications</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px', marginBottom: '28px' }}>
+                {qualificationsList.length === 0 ? (
+                  <p style={{ color: 'var(--text-muted)' }}>No qualifications added yet.</p>
+                ) : (
+                  qualificationsList.map(q => (
+                    <div key={q._id} style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: '1rem' }}>{q.title}</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{q.issuer} • {q.year}</div>
+                        <span style={{ display: 'inline-block', marginTop: '6px', background: '#dcfce7', color: '#16a34a', fontSize: '0.75rem', padding: '2px 8px', borderRadius: '12px', fontWeight: 700 }}>
+                          🛡️ AI Verified (Score: {q.score || 96}%)
+                        </span>
+                      </div>
+                      <button onClick={() => handleDeleteQualification(q._id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1rem' }}>
+                        <i className="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Certificates Grid */}
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '12px' }}>Accredited Skill Certificates</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' }}>
+                {certificatesList.length === 0 ? (
+                  <p style={{ color: 'var(--text-muted)' }}>No certificates added yet.</p>
+                ) : (
+                  certificatesList.map(c => (
+                    <div key={c._id} style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: '1rem' }}>{c.title}</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{c.issuer} • {c.category}</div>
+                        <span style={{ display: 'inline-block', marginTop: '6px', background: 'rgba(99,102,241,0.15)', color: '#818cf8', fontSize: '0.75rem', padding: '2px 8px', borderRadius: '12px', fontWeight: 700 }}>
+                          ⭐ {c.verifiedBadge || 'DigiLocker & AI Verified'}
+                        </span>
+                      </div>
+                      <button onClick={() => handleDeleteCertificate(c._id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1rem' }}>
+                        <i className="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           )}
 

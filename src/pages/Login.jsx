@@ -1,10 +1,20 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../components/context/AuthContext';
 
 const Login = () => {
-  const [activeTab, setActiveTab] = useState('login');
-  const [loginData, setLoginData] = useState({ email: '', password: '', rememberMe: false });
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const searchParams = new URLSearchParams(location.search);
+  const isSignupParam = searchParams.get('signup') === 'true';
+  const redirectTarget = searchParams.get('redirect') || '/';
+
+  const [activeTab, setActiveTab] = useState(() => (isSignupParam ? 'signup' : 'login'));
+  const [loginData, setLoginData] = useState(() => {
+    const savedEmail = typeof window !== 'undefined' ? localStorage.getItem('talentConnectEmail') || '' : '';
+    return { email: savedEmail, password: '', rememberMe: Boolean(savedEmail) };
+  });
   const [signupData, setSignupData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [resetEmail, setResetEmail] = useState('');
   const [showPassword, setShowPassword] = useState({});
@@ -12,20 +22,11 @@ const Login = () => {
   const [dialog, setDialog] = useState({ show: false, icon: '', title: '', message: '', buttons: [] });
   
   const { login, signup } = useAuth();
-  const navigate = useNavigate();
-
-  // Load saved login
-  useState(() => {
-    const savedEmail = localStorage.getItem('talentConnectEmail');
-    if (savedEmail) {
-      setLoginData(prev => ({ ...prev, email: savedEmail, rememberMe: true }));
-    }
-  }, []);
 
   const showDialog = (icon, title, message, buttons = []) => {
     setDialog({ show: true, icon, title, message, buttons });
     if (buttons.length === 0) {
-      setTimeout(() => setDialog({ show: false, icon: '', title: '', message: '', buttons: [] }), 2000);
+      setTimeout(() => setDialog({ show: false, icon: '', title: '', message: '', buttons: [] }), 1200);
     }
   };
 
@@ -49,13 +50,13 @@ const Login = () => {
       showDialog(
         '<i class="fas fa-check-circle success"></i>',
         'Welcome Back!',
-        `You have successfully signed in as ${userData.name || 'User'}. Redirecting...`,
+        `You have successfully signed in as ${userData.name || 'User'}.`,
         []
       );
 
       setTimeout(() => {
-        navigate('/');
-      }, 2000);
+        navigate(redirectTarget);
+      }, 700);
     } catch (error) {
       console.error('Login error:', error);
       showDialog(
@@ -99,13 +100,13 @@ const Login = () => {
       showDialog(
         '<i class="fas fa-check-circle success"></i>',
         'Account Created!',
-        'Your TalentConnect account has been successfully created. Redirecting...',
+        'Your TalentConnect account has been successfully created.',
         []
       );
 
       setTimeout(() => {
-        navigate('/');
-      }, 2000);
+        navigate(redirectTarget);
+      }, 700);
     } catch (error) {
       console.error('Signup error:', error);
       showDialog(

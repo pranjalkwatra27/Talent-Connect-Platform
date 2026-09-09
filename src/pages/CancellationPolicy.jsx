@@ -1,17 +1,39 @@
 const CancellationPolicy = () => (
-  <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+  <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
+    {/* ── UNIFIED HERO HEADER ── */}
     <section style={{
-      background: 'linear-gradient(135deg,#1a1a2e,#16213e)',
-      padding: '100px 24px 70px', textAlign: 'center'
+      background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+      padding: '120px 24px 60px',
+      borderBottom: '1px solid rgba(255,255,255,0.1)',
+      textAlign: 'center'
     }}>
-      <h1 style={{ color: 'white', fontSize: 'clamp(2rem,4vw,2.8rem)', fontWeight: 800, marginBottom: '12px' }}>Cancellation Policy 🚫</h1>
-      <p style={{ color: '#94a3b8', maxWidth: '560px', margin: '0 auto', fontSize: '1rem' }}>
-        Understand your rights and responsibilities when cancelling or modifying a booking.
-      </p>
-      <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '16px' }}>Last Updated: June 2026</p>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: '8px',
+          background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+          borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+          fontWeight: 700, marginBottom: '20px'
+        }}>
+          <span style={{ color: '#ef4444' }}>●</span> Booking Flexibility & Modifications
+        </div>
+        <h1 style={{
+          color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+          fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em',
+          lineHeight: 1.2
+        }}>
+          Cancellation Policy
+        </h1>
+        <p style={{
+          color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+          maxWidth: '700px', margin: '0 auto', lineHeight: 1.6
+        }}>
+          Understand your rights and terms when rescheduling, cancelling, or modifying an artist booking.
+        </p>
+      </div>
     </section>
 
-    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '60px 24px 80px' }}>
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '48px 24px 80px' }}>
       {/* Quick Summary Table */}
       <div style={{
         background: 'var(--card-bg)', border: '1.5px solid var(--primary)', borderRadius: '20px',

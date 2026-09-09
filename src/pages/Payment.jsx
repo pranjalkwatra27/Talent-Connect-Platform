@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../components/context/AuthContext';
 import * as api from '../services/api';
 
 const Payment = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [bookingData, setBookingData] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [processing, setProcessing] = useState(false);

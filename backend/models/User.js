@@ -55,13 +55,54 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  digilockerVerified: {
+    type: Boolean,
+    default: false,
+  },
+  aiVerificationScore: {
+    type: Number,
+    default: 0,
+  },
+  aiVerificationSummary: {
+    docType: { type: String, default: '' },
+    nameMatchConfidence: { type: Number, default: 0 },
+    tamperCheckPassed: { type: Boolean, default: true },
+    ocrExtractedName: { type: String, default: '' },
+    ocrExtractedNumber: { type: String, default: '' },
+    notes: { type: String, default: '' },
+  },
   docVerification: {
     docType: { type: String, default: '' },
     docNumber: { type: String, default: '' },
     docUrl: { type: String, default: '' },
     verifiedAt: { type: Date },
     status: { type: String, default: 'not_submitted' },
+    verificationMethod: { type: String, default: 'upload' }, // 'upload' | 'ai_scan' | 'digilocker'
   },
+  qualifications: [
+    {
+      title: { type: String, required: true },
+      issuer: { type: String, required: true },
+      year: { type: String, default: '' },
+      docUrl: { type: String, default: '' },
+      isAiVerified: { type: Boolean, default: false },
+      isDigiLockerVerified: { type: Boolean, default: false },
+      score: { type: Number, default: 95 },
+      verifiedAt: { type: Date, default: Date.now },
+    }
+  ],
+  certificates: [
+    {
+      title: { type: String, required: true },
+      category: { type: String, default: 'Professional Skill' },
+      issuer: { type: String, required: true },
+      credentialId: { type: String, default: '' },
+      fileUrl: { type: String, default: '' },
+      verifiedBadge: { type: String, default: 'AI & DigiLocker Verified' },
+      aiConfidence: { type: Number, default: 98 },
+      verifiedAt: { type: Date, default: Date.now },
+    }
+  ],
   businessInfo: {
     organization: { type: String, default: '' },
     businessType: { type: String, default: '' },

@@ -38,50 +38,71 @@ const PartnerResources = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
 
-      {/* ── HERO ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0f0c29 0%, #2d1b69 100%)',
-        padding: '80px 24px 64px', textAlign: 'center'
+      {/* ── UNIFIED HERO HEADER ── */}
+      <section style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+        padding: '120px 24px 60px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        textAlign: 'center'
       }}>
-        <span style={{
-          display: 'inline-block', background: 'rgba(139,92,246,0.25)',
-          color: '#a78bfa', padding: '5px 16px', borderRadius: '20px',
-          fontSize: '0.78rem', fontWeight: 700, letterSpacing: '1.5px', marginBottom: '18px'
-        }}>FOR ARTISTS & PROFESSIONALS</span>
-        <h1 style={{ color: 'white', fontSize: 'clamp(1.9rem, 4.5vw, 3rem)', fontWeight: 800, marginBottom: '14px', lineHeight: 1.2 }}>
-          Everything you need to grow your business on TalentConnect
-        </h1>
-        <p style={{ color: '#c4b5fd', maxWidth: '580px', margin: '0 auto 36px', fontSize: '1.02rem', lineHeight: 1.7 }}>
-          Guides, templates, strategies, and tools — curated by our team of event industry experts.
-        </p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={() => navigate('/organizer-verification')} style={{
-            background: 'var(--primary)', color: 'white', padding: '13px 32px',
-            borderRadius: '30px', border: 'none', fontWeight: 700, fontSize: '0.97rem', cursor: 'pointer'
-          }}>Get Verified & Start Earning</button>
-          <button onClick={() => navigate('/organizer-dashboard')} style={{
-            background: 'rgba(255,255,255,0.1)', color: 'white', padding: '13px 32px',
-            borderRadius: '30px', border: '1px solid rgba(255,255,255,0.25)',
-            fontWeight: 700, fontSize: '0.97rem', cursor: 'pointer'
-          }}>Go to Dashboard</button>
-        </div>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+            borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+            fontWeight: 700, marginBottom: '20px'
+          }}>
+            <span style={{ color: '#10b981' }}>●</span> Artist & Partner Growth Academy
+          </div>
+          <h1 style={{
+            color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+            fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em',
+            lineHeight: 1.2
+          }}>
+            Grow Your Talent Business
+          </h1>
+          <p style={{
+            color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            maxWidth: '700px', margin: '0 auto 28px', lineHeight: 1.6
+          }}>
+            Step-by-step guides, pricing benchmarks, client message scripts, and growth playbooks for top artists.
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button onClick={() => navigate('/artist-verification')} style={{
+              background: 'linear-gradient(135deg, var(--primary) 0%, #4338ca 100%)',
+              color: 'white', padding: '12px 28px', borderRadius: '30px', border: 'none',
+              fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)'
+            }}>
+              Get Verified Now
+            </button>
+            <button onClick={() => navigate('/artist-dashboard')} style={{
+              background: 'rgba(255,255,255,0.1)', color: 'white', padding: '12px 28px',
+              borderRadius: '30px', border: '1px solid rgba(255,255,255,0.25)',
+              fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', backdropFilter: 'blur(8px)'
+            }}>
+              Go to Artist Dashboard
+            </button>
+          </div>
 
-        {/* Stat strip */}
-        <div style={{ display: 'flex', gap: '32px', justifyContent: 'center', marginTop: '48px', flexWrap: 'wrap' }}>
-          {[
-            { v: '₹5 Cr+', l: 'Paid to artists' },
-            { v: '10,000+', l: 'Verified artists' },
-            { v: '3.2x', l: 'Avg earnings increase' },
-          ].map(s => (
-            <div key={s.l} style={{ textAlign: 'center' }}>
-              <div style={{ color: 'white', fontWeight: 800, fontSize: '1.5rem' }}>{s.v}</div>
-              <div style={{ color: '#a78bfa', fontSize: '0.82rem', marginTop: '2px' }}>{s.l}</div>
-            </div>
-          ))}
+          {/* Stat strip */}
+          <div style={{ display: 'flex', gap: '32px', justifyContent: 'center', marginTop: '40px', flexWrap: 'wrap' }}>
+            {[
+              { v: '₹5 Cr+', l: 'Paid to Artists' },
+              { v: '10,000+', l: 'Verified Artists' },
+              { v: '3.2x', l: 'Avg Earnings Increase' },
+            ].map(s => (
+              <div key={s.l} style={{ textAlign: 'center' }}>
+                <div style={{ color: 'white', fontWeight: 800, fontSize: '1.5rem' }}>{s.v}</div>
+                <div style={{ color: '#cbd5e1', fontSize: '0.82rem', marginTop: '2px' }}>{s.l}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* ── RESOURCE SECTIONS ── */}
       {resources.map(section => (

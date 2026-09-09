@@ -138,13 +138,11 @@ main {
   width: 35px;
   height: 35px;
   object-fit: contain;
-  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   filter: drop-shadow(0 2px 8px rgba(91, 33, 182, 0.2));
 }
 
 .logo-container:hover img {
-  transform: rotate(360deg) scale(1.1);
-  filter: drop-shadow(0 4px 12px rgba(91, 33, 182, 0.4));
+  transform: none;
 }
 
 .logo-text {
@@ -156,11 +154,6 @@ main {
   font-size: 26px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  transition: all 0.3s ease;
-}
-
-.logo-container:hover .logo-text {
-  letter-spacing: 2px;
 }
 
 .nav {
@@ -1221,23 +1214,26 @@ main {
 }
 
 .auth-hero {
-  background: linear-gradient(rgba(91,33,182,0.9), rgba(91,33,182,0.9)), url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop') no-repeat center/cover;
-  padding: 80px 40px 60px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  padding: 120px 24px 60px;
   text-align: center;
   color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .auth-hero h1 {
-  font-size: 42px;
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
   font-weight: 800;
-  margin-bottom: 15px;
-  animation: fadeIn 0.6s ease;
+  margin-bottom: 14px;
+  letter-spacing: -0.02em;
 }
 
 .auth-hero p {
-  font-size: 18px;
-  opacity: 0.9;
-  animation: fadeIn 0.8s ease;
+  font-size: 1.05rem;
+  color: #cbd5e1;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 .auth-container {

@@ -32,6 +32,57 @@ const BrowseEvents = () => {
   const [sortBy, setSortBy] = useState('rating');
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 12;
+  const [locating, setLocating] = useState(false);
+
+  const detectLocation = async () => {
+    setLocating(true);
+    const fallbackToIp = async () => {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        const city = data.city || data.region || 'Delhi';
+        setSearch(city);
+      } catch {
+        try {
+          const res2 = await fetch('https://ipwhois.app/json/');
+          const data2 = await res2.json();
+          setSearch(data2.city || 'Delhi');
+        } catch {
+          setSearch('Delhi');
+        }
+      } finally {
+        setLocating(false);
+      }
+    };
+
+    if (!navigator.geolocation) {
+      await fallbackToIp();
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+          const data = await res.json();
+          let city = data.city || data.locality || data.principalSubdivision || '';
+          if (city) {
+            setSearch(city);
+            setLocating(false);
+          } else {
+            await fallbackToIp();
+          }
+        } catch {
+          await fallbackToIp();
+        }
+      },
+      async () => {
+        await fallbackToIp();
+      },
+      { timeout: 8000 }
+    );
+  };
 
   useEffect(() => {
     // Read pre-filled category from URL params
@@ -146,7 +197,7 @@ const BrowseEvents = () => {
                 type="text" placeholder="Search artists, services, city locations..."
                 value={search} onChange={e => setSearch(e.target.value)}
                 style={{
-                  width: '100%', padding: '14px 16px 14px 44px',
+                  width: '100%', padding: '14px 100px 14px 44px',
                   background: 'rgba(255,255,255,0.06)', border: '1.5px solid rgba(255,255,255,0.12)',
                   borderRadius: '12px', color: 'white', fontSize: '0.95rem',
                   outline: 'none', backdropFilter: 'blur(10px)', boxSizing: 'border-box',
@@ -161,6 +212,22 @@ const BrowseEvents = () => {
                   e.target.style.background = 'rgba(255,255,255,0.06)';
                 }}
               />
+              <button
+                type="button"
+                onClick={detectLocation}
+                disabled={locating}
+                title="Detect My Location"
+                style={{
+                  position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)',
+                  background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.4)',
+                  color: '#818cf8', borderRadius: '8px', padding: '6px 12px',
+                  fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: '4px'
+                }}
+              >
+                {locating ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-map-marker-alt"></i>}
+                {locating ? 'Locating...' : 'Near Me'}
+              </button>
             </div>
 
             {/* Price */}
@@ -309,7 +376,7 @@ const BrowseEvents = () => {
 
               return (
                 <div key={artist._id}
-                  onClick={() => navigate(`/booking/${artist._id}`)}
+                  onClick={() => navigate(`/events/${artist._id}`)}
                   style={{
                     background: '#ffffff', border: '1px solid #e2e8f0',
                     borderRadius: '20px', overflow: 'hidden', cursor: 'pointer',
@@ -337,18 +404,30 @@ const BrowseEvents = () => {
                     />
                     
                     {/* Verified badge */}
-                    {artist.isVerified && (
-                      <div style={{
-                        position: 'absolute', top: '14px', left: '14px',
-                        background: 'linear-gradient(135deg, #10b981, #059669)',
-                        color: 'white', padding: '4px 12px', borderRadius: '30px',
-                        fontSize: '0.72rem', fontWeight: 800,
-                        display: 'flex', alignItems: 'center', gap: '5px',
-                        boxShadow: '0 4px 10px rgba(16,185,129,0.3)'
-                      }}>
-                        <i className="fas fa-shield-alt"></i> Verified
-                      </div>
-                    )}
+                    <div style={{ position: 'absolute', top: '14px', left: '14px', display: 'flex', gap: '6px' }}>
+                      {artist.isVerified && (
+                        <div style={{
+                          background: 'linear-gradient(135deg, #10b981, #059669)',
+                          color: 'white', padding: '4px 10px', borderRadius: '30px',
+                          fontSize: '0.72rem', fontWeight: 800,
+                          display: 'flex', alignItems: 'center', gap: '5px',
+                          boxShadow: '0 4px 10px rgba(16,185,129,0.3)'
+                        }}>
+                          <i className="fas fa-shield-alt"></i> AI Verified
+                        </div>
+                      )}
+                      {artist.digilockerVerified && (
+                        <div style={{
+                          background: '#0b3954',
+                          color: 'white', padding: '4px 10px', borderRadius: '30px',
+                          fontSize: '0.72rem', fontWeight: 800,
+                          display: 'flex', alignItems: 'center', gap: '4px',
+                          boxShadow: '0 4px 10px rgba(11,57,84,0.4)'
+                        }}>
+                          <i className="fas fa-lock"></i> DigiLocker
+                        </div>
+                      )}
+                    </div>
                     
                     {/* Price badge */}
                     <div style={{
@@ -399,16 +478,40 @@ const BrowseEvents = () => {
                       </span>
                     </div>
 
-                    {/* Book Now trigger */}
-                    <button style={{
-                      width: '100%', padding: '12px', borderRadius: '12px', border: 'none',
-                      background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: 'white',
-                      fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
-                      marginTop: '8px', transition: 'all 0.2s ease',
-                      boxShadow: '0 4px 10px rgba(99,102,241,0.15)'
-                    }}>
-                      Select Package & Book
-                    </button>
+                    {/* Action buttons */}
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/events/${artist._id}`);
+                        }}
+                        style={{
+                          flex: 1, padding: '10px', borderRadius: '10px',
+                          border: '1.5px solid #e2e8f0', background: '#f8fafc',
+                          color: '#334155', fontWeight: 700, fontSize: '0.82rem',
+                          cursor: 'pointer', transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#e2e8f0'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#f8fafc'}
+                      >
+                        View Profile
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/booking/${artist._id}`);
+                        }}
+                        style={{
+                          flex: 1, padding: '10px', borderRadius: '10px', border: 'none',
+                          background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: 'white',
+                          fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          boxShadow: '0 4px 10px rgba(99,102,241,0.15)'
+                        }}
+                      >
+                        Book Now
+                      </button>
+                    </div>
                   </div>
                 </div>
               );

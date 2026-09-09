@@ -2,226 +2,203 @@ import { useState } from 'react';
 
 const openings = [
   {
-    id: 1, title: 'Senior Frontend Developer', dept: 'Engineering', location: 'Remote / Mumbai',
+    id: 1, title: 'Senior Full Stack Engineer', dept: 'Engineering', location: 'Remote / Delhi NCR',
     type: 'Full-time', salary: '₹18–28 LPA',
-    desc: 'Lead our React frontend, build beautiful UIs, and set the bar for code quality across the team.',
-    skills: ['React', 'TypeScript', 'Firebase', 'CSS Animation'],
+    desc: 'Lead modern React & Node.js architectures, design scalable APIs, and implement AI verification tools.',
+    skills: ['React', 'Node.js', 'MongoDB', 'Express', 'AI/OCR'],
   },
   {
-    id: 2, title: 'Backend Engineer (Node.js)', dept: 'Engineering', location: 'Bangalore',
-    type: 'Full-time', salary: '₹15–24 LPA',
-    desc: 'Design scalable APIs, manage Firebase infrastructure, and ensure our platform handles millions of bookings.',
-    skills: ['Node.js', 'Firebase', 'REST APIs', 'Cloud Functions'],
+    id: 2, title: 'Lead Product Designer (UI/UX)', dept: 'Design', location: 'Remote / Mumbai',
+    type: 'Full-time', salary: '₹14–22 LPA',
+    desc: 'Design intuitive, state-of-the-art experiences for event organizers, couples, and creative talent partners.',
+    skills: ['Figma', 'Design Systems', 'Micro-interactions', 'User Research'],
   },
   {
-    id: 3, title: 'Product Designer (UI/UX)', dept: 'Design', location: 'Remote',
-    type: 'Full-time', salary: '₹12–20 LPA',
-    desc: 'Own the entire design system — from wireframes to polished handoffs. Shape how India books event talent.',
-    skills: ['Figma', 'Prototyping', 'Design Systems', 'User Research'],
-  },
-  {
-    id: 4, title: 'Growth & Marketing Manager', dept: 'Marketing', location: 'Delhi / Remote',
+    id: 3, title: 'Artist Relations & Partnerships Lead', dept: 'Business', location: 'Pan-India',
     type: 'Full-time', salary: '₹10–18 LPA',
-    desc: 'Drive user acquisition, run performance campaigns, and build TalentConnect into a household name.',
-    skills: ['Performance Marketing', 'SEO', 'Analytics', 'Content Strategy'],
+    desc: 'Onboard top bridal makeup artists, celebrity anchors, DJs, and wedding bands across metro hubs.',
+    skills: ['Talent Partnerships', 'Community Building', 'Industry Relations'],
   },
   {
-    id: 5, title: 'Artist Partnerships (BD)', dept: 'Business', location: 'Pan India',
+    id: 4, title: 'AI & Verification Operations Specialist', dept: 'Operations', location: 'Delhi NCR',
     type: 'Full-time', salary: '₹8–14 LPA',
-    desc: 'Onboard top artists, build relationships with wedding planners, and grow our verified network.',
-    skills: ['Business Development', 'CRM', 'Negotiation', 'Events Industry'],
-  },
-  {
-    id: 6, title: 'Customer Experience Lead', dept: 'Support', location: 'Remote',
-    type: 'Full-time', salary: '₹6–10 LPA',
-    desc: 'Be the voice of TalentConnect. Resolve issues fast, build processes, and turn customers into fans.',
-    skills: ['Customer Success', 'Zendesk', 'Communication', 'Hindi/English'],
+    desc: 'Manage cryptographic DigiLocker credentials verification and train OCR models for certificate detection.',
+    skills: ['Document Verification', 'DigiLocker Gateway', 'Process Optimization'],
   },
 ];
 
 const perks = [
-  { icon: '🏡', title: 'Remote First', desc: 'Work from anywhere in India. We judge output, not attendance.' },
-  { icon: '📈', title: 'ESOPs for Early Team', desc: 'Own a slice of what we\'re building together.' },
-  { icon: '🏥', title: 'Health Cover', desc: '₹5L GMC for you + family. Mental health included.' },
-  { icon: '🎓', title: '₹20,000 Learning Budget', desc: 'Courses, books, conferences — invest in yourself.' },
-  { icon: '🌴', title: 'Flexible PTO', desc: 'No leave counting. Take time when you need it.' },
-  { icon: '🎉', title: 'Quarterly Offsites', desc: 'Team trips, celebrations, and real human connection.' },
-  { icon: '⚡', title: 'Fast Shipping Culture', desc: 'We ship weekly. Your work is seen and used immediately.' },
-  { icon: '🤝', title: 'Flat Hierarchy', desc: 'Direct access to founders. Zero politics. All craft.' },
+  { icon: '🏡', title: 'Remote-First Culture', desc: 'Work from wherever you are most productive in India.' },
+  { icon: '📈', title: 'Generous ESOPs', desc: 'True ownership in building India’s largest talent platform.' },
+  { icon: '🏥', title: 'Premium Health Insurance', desc: 'Comprehensive medical cover for you and your family.' },
+  { icon: '🎓', title: 'Annual Learning Grant', desc: '₹25,000 per year dedicated to courses, workshops, and books.' },
+  { icon: '🌴', title: 'Flexible Paid Time Off', desc: 'Recharge when you need it without micromanagement.' },
+  { icon: '🚀', title: 'Fast-Moving High Craft', desc: 'Direct impact with weekly shipped production features.' },
 ];
 
-const depts = ['All', 'Engineering', 'Design', 'Marketing', 'Business', 'Support'];
+const depts = ['All', 'Engineering', 'Design', 'Business', 'Operations'];
 
 const Careers = () => {
   const [filter, setFilter] = useState('All');
-  const [openJob, setOpenJob] = useState(null);
+  const [appliedJob, setAppliedJob] = useState(null);
+
   const filtered = filter === 'All' ? openings : openings.filter(o => o.dept === filter);
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>
-
-      {/* ── HERO ── */}
-      <div style={{ position: 'relative', height: '520px', overflow: 'hidden' }}>
-        <img
-          src="/careers_team.jpg"
-          alt="TalentConnect team"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
-        />
-        {/* dark gradient overlay */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(135deg, rgba(10,10,30,0.82) 0%, rgba(80,20,80,0.6) 100%)',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '24px'
-        }}>
-          <span style={{
-            display: 'inline-block', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(6px)',
-            color: 'white', padding: '6px 18px', borderRadius: '30px', fontSize: '0.82rem', fontWeight: 700,
-            letterSpacing: '1.5px', marginBottom: '18px', border: '1px solid rgba(255,255,255,0.25)'
-          }}>WE'RE HIRING</span>
-          <h1 style={{ color: 'white', fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 800, lineHeight: 1.15, marginBottom: '16px', maxWidth: '700px' }}>
-            Build something that matters with us
-          </h1>
-          <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '1.1rem', maxWidth: '540px', marginBottom: '32px', lineHeight: 1.7 }}>
-            We're building India's most trusted platform for event professionals. Come shape it.
-          </p>
-          <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <a href="#openings" style={{
-              background: 'var(--primary)', color: 'white', padding: '14px 34px',
-              borderRadius: '50px', fontWeight: 700, textDecoration: 'none', fontSize: '1rem'
-            }}>See Open Roles ↓</a>
-            <a href="mailto:careers@talentconnect.in" style={{
-              background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)',
-              color: 'white', padding: '14px 34px', borderRadius: '50px',
-              fontWeight: 700, textDecoration: 'none', fontSize: '1rem',
-              border: '1px solid rgba(255,255,255,0.3)'
-            }}>Send Your Resume</a>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+      {/* ── UNIFIED HERO HEADER ── */}
+      <section style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+        padding: '120px 24px 60px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        textAlign: 'center'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+            borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+            fontWeight: 700, marginBottom: '20px'
+          }}>
+            <span style={{ color: '#10b981' }}>●</span> We Are Hiring Passionate Builders
           </div>
-        </div>
-      </div>
-
-      {/* ── NUMBERS STRIP ── */}
-      <div style={{ background: 'var(--primary)', padding: '28px 24px' }}>
-        <div style={{
-          maxWidth: '900px', margin: '0 auto',
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '8px', textAlign: 'center'
-        }}>
-          {[
-            { value: '3 yrs', label: 'Founded' },
-            { value: '47', label: 'Team members' },
-            { value: '10K+', label: 'Artists listed' },
-            { value: '50K+', label: 'Bookings completed' },
-          ].map(s => (
-            <div key={s.label}>
-              <div style={{ color: 'white', fontSize: '1.7rem', fontWeight: 800 }}>{s.value}</div>
-              <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.85rem', marginTop: '2px' }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── PERKS ── */}
-      <section style={{ padding: '80px 24px', maxWidth: '1100px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '52px' }}>
-          <h2 style={{ color: 'var(--text)', fontSize: '2rem', fontWeight: 800, marginBottom: '10px' }}>Why join us?</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem', maxWidth: '500px', margin: '0 auto' }}>
-            We treat people like adults and invest in them accordingly.
+          <h1 style={{
+            color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+            fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em'
+          }}>
+            Careers at TalentConnect
+          </h1>
+          <p style={{
+            color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            maxWidth: '680px', margin: '0 auto', lineHeight: 1.6
+          }}>
+            Join us in empowering thousands of creative professionals and making event planning seamless across India.
           </p>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '20px' }}>
-          {perks.map(p => (
-            <div key={p.title} style={{
-              background: 'var(--card-bg)', border: '1px solid var(--border)',
-              borderRadius: '16px', padding: '26px 22px',
-            }}>
-              <div style={{ fontSize: '2rem', marginBottom: '12px' }}>{p.icon}</div>
-              <h3 style={{ color: 'var(--text)', fontWeight: 700, fontSize: '1rem', marginBottom: '6px' }}>{p.title}</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.65 }}>{p.desc}</p>
-            </div>
-          ))}
         </div>
       </section>
 
-      {/* ── OPEN ROLES ── */}
-      <section id="openings" style={{ padding: '0 24px 100px', maxWidth: '1100px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
-          <div>
-            <h2 style={{ color: 'var(--text)', fontSize: '2rem', fontWeight: 800, marginBottom: '4px' }}>Open positions</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{filtered.length} role{filtered.length !== 1 ? 's' : ''} available</p>
-          </div>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {/* ── PERKS & CULTURE ── */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+          <span style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            Why Join Us
+          </span>
+          <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#0f172a', marginTop: '6px' }}>
+            Life, Culture & Benefits
+          </h2>
+        </div>
+
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: '20px', marginBottom: '60px'
+        }}>
+          {perks.map((p, i) => (
+            <div key={i} style={{
+              background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px',
+              padding: '24px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+            }}>
+              <div style={{ fontSize: '2rem', marginBottom: '12px' }}>{p.icon}</div>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', marginBottom: '6px' }}>{p.title}</h3>
+              <p style={{ color: '#64748b', fontSize: '0.88rem', lineHeight: 1.5, margin: 0 }}>{p.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── OPEN ROLES FILTER ── */}
+        <div id="openings" style={{ textAlign: 'center', marginBottom: '30px' }}>
+          <span style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            Opportunities
+          </span>
+          <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#0f172a', marginTop: '6px', marginBottom: '20px' }}>
+            Open Positions ({filtered.length})
+          </h2>
+
+          {/* Dept filters */}
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
             {depts.map(d => (
-              <button key={d} onClick={() => setFilter(d)} style={{
-                padding: '7px 18px', borderRadius: '30px', border: '1.5px solid',
-                borderColor: filter === d ? 'var(--primary)' : 'var(--border)',
-                background: filter === d ? 'var(--primary)' : 'transparent',
-                color: filter === d ? 'white' : 'var(--text-muted)',
-                fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', transition: '0.2s'
-              }}>{d}</button>
+              <button
+                key={d}
+                onClick={() => setFilter(d)}
+                style={{
+                  padding: '8px 18px', borderRadius: '20px', fontWeight: 700, fontSize: '0.85rem',
+                  border: `1.5px solid ${filter === d ? 'var(--primary)' : '#e2e8f0'}`,
+                  background: filter === d ? 'var(--primary)' : '#ffffff',
+                  color: filter === d ? '#ffffff' : '#475569',
+                  cursor: 'pointer', transition: 'all 0.2s ease'
+                }}
+              >
+                {d}
+              </button>
             ))}
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        {/* Roles List */}
+        <div style={{ display: 'grid', gap: '18px', maxWidth: '900px', margin: '0 auto 60px' }}>
           {filtered.map(job => (
-            <div key={job.id}>
-              <div
-                onClick={() => setOpenJob(openJob === job.id ? null : job.id)}
-                style={{
-                  background: 'var(--card-bg)', border: `1.5px solid ${openJob === job.id ? 'var(--primary)' : 'var(--border)'}`,
-                  borderRadius: openJob === job.id ? '16px 16px 0 0' : '16px',
-                  padding: '22px 28px', cursor: 'pointer',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px'
-                }}>
-                <div>
-                  <h3 style={{ color: 'var(--text)', fontWeight: 700, fontSize: '1.08rem', marginBottom: '6px' }}>{job.title}</h3>
-                  <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <span style={{ background: 'rgba(139,92,246,0.12)', color: 'var(--primary)', padding: '3px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700 }}>{job.dept}</span>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '0.83rem' }}>📍 {job.location}</span>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '0.83rem' }}>⏰ {job.type}</span>
-                    <span style={{ color: '#22c55e', fontSize: '0.83rem', fontWeight: 600 }}>💰 {job.salary}</span>
-                  </div>
+            <div key={job.id} style={{
+              background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px',
+              padding: '28px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.03)',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px'
+            }}>
+              <div>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '8px' }}>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{job.title}</h3>
+                  <span style={{ background: 'rgba(99,102,241,0.1)', color: 'var(--primary)', padding: '2px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800 }}>
+                    {job.dept}
+                  </span>
                 </div>
-                <i className={`fas fa-chevron-${openJob === job.id ? 'up' : 'down'}`} style={{ color: 'var(--primary)' }} />
+                <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '12px', maxWidth: '540px' }}>{job.desc}</p>
+                <div style={{ display: 'flex', gap: '16px', color: '#475569', fontSize: '0.85rem', fontWeight: 600, flexWrap: 'wrap' }}>
+                  <span>📍 {job.location}</span>
+                  <span>💼 {job.type}</span>
+                  <span>💰 {job.salary}</span>
+                </div>
               </div>
-              {openJob === job.id && (
-                <div style={{
-                  background: 'var(--card-bg)', border: '1.5px solid var(--primary)',
-                  borderTop: '1px solid var(--border)', borderRadius: '0 0 16px 16px',
-                  padding: '24px 28px'
-                }}>
-                  <p style={{ color: 'var(--text-muted)', lineHeight: 1.75, marginBottom: '18px' }}>{job.desc}</p>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '24px' }}>
-                    {job.skills.map(s => (
-                      <span key={s} style={{
-                        background: 'var(--border)', color: 'var(--text)',
-                        padding: '4px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600
-                      }}>{s}</span>
-                    ))}
-                  </div>
-                  <a href={`mailto:careers@talentconnect.in?subject=Application — ${job.title}`} style={{
-                    background: 'var(--primary)', color: 'white', padding: '11px 28px',
-                    borderRadius: '30px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem'
-                  }}>Apply for this role →</a>
-                </div>
-              )}
+
+              <button
+                onClick={() => setAppliedJob(job)}
+                style={{
+                  background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: 'white',
+                  border: 'none', padding: '12px 24px', borderRadius: '12px', fontWeight: 800,
+                  fontSize: '0.9rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(99,102,241,0.25)'
+                }}
+              >
+                Apply Now →
+              </button>
             </div>
           ))}
         </div>
 
-        <div style={{
-          marginTop: '56px', background: 'var(--card-bg)', border: '1px solid var(--border)',
-          borderRadius: '20px', padding: '40px', textAlign: 'center'
-        }}>
-          <p style={{ color: 'var(--text)', fontWeight: 700, fontSize: '1.15rem', marginBottom: '8px' }}>Don't see your role?</p>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '22px', fontSize: '0.95rem' }}>
-            We love proactive people. Send us your work and why you'd be a great fit.
-          </p>
-          <a href="mailto:careers@talentconnect.in" style={{
-            background: 'var(--primary)', color: 'white', padding: '12px 32px',
-            borderRadius: '50px', textDecoration: 'none', fontWeight: 700
-          }}>careers@talentconnect.in</a>
-        </div>
-      </section>
+        {/* Application Modal */}
+        {appliedJob && (
+          <div style={{
+            position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(15,23,42,0.7)',
+            backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
+          }}>
+            <div style={{
+              background: '#ffffff', borderRadius: '24px', padding: '36px', width: '100%',
+              maxWidth: '500px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, margin: 0 }}>Apply: {appliedJob.title}</h3>
+                <button onClick={() => setAppliedJob(null)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: '#64748b' }}>&times;</button>
+              </div>
+              <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '20px' }}>
+                Send your resume or portfolio to our recruitment team at <strong>careers@talentconnect.in</strong> with subject &quot;Application: {appliedJob.title}&quot;.
+              </p>
+              <button
+                onClick={() => setAppliedJob(null)}
+                style={{ width: '100%', padding: '12px', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 800, cursor: 'pointer' }}
+              >
+                Got It
+              </button>
+            </div>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 };

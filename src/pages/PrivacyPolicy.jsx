@@ -7,13 +7,40 @@ export default function PrivacyPolicy() {
   }, []);
 
   return (
-    <div className="policy-page">
-      <section className="policy-hero">
-        <h1>Privacy Policy</h1>
-        <p>Your privacy is important to us. Learn how we collect, use, and protect your information.</p>
+    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
+      <section style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+        padding: '120px 24px 60px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        textAlign: 'center'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+            borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+            fontWeight: 700, marginBottom: '20px'
+          }}>
+            <span style={{ color: '#10b981' }}>●</span> Legal, Compliance & Data Security
+          </div>
+          <h1 style={{
+            color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+            fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em',
+            lineHeight: 1.2
+          }}>
+            Privacy Policy
+          </h1>
+          <p style={{
+            color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            maxWidth: '700px', margin: '0 auto', lineHeight: 1.6
+          }}>
+            Your privacy is paramount. Learn how TalentConnect encrypts, manages, and safeguards your data.
+          </p>
+        </div>
       </section>
 
-      <div className="policy-container">
+      <div className="policy-container" style={{ maxWidth: '900px', margin: '0 auto', padding: '48px 24px 80px' }}>
         <p className="last-updated">Last Updated: January 1, 2025</p>
         
         <div className="policy-section">

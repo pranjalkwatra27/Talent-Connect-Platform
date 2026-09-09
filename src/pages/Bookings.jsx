@@ -20,18 +20,23 @@ const Bookings = () => {
       return;
     }
     loadBookings();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, navigate]);
 
   useEffect(() => {
     filterBookings(currentFilter);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookings, currentFilter]);
 
   const loadBookings = async () => {
     try {
       setLoading(true);
       
-      const rawBookings = await api.getClientBookings();
-      const bookingsArray = rawBookings.map(b => {
+      const rawBookings = user.role === 'artist' 
+        ? await api.getArtistBookings() 
+        : await api.getClientBookings();
+
+      const bookingsArray = (rawBookings || []).map(b => {
         const baseAmt = b.amount || 0;
         const gst = Math.round(baseAmt * 0.18);
         const platform = 50;
@@ -60,8 +65,8 @@ const Bookings = () => {
           userId: user?._id,
           userEmail: user?.email,
           userName: user?.name || 'Client',
-          customerName: user?.name || 'Client',
-          customerEmail: user?.email,
+          customerName: b.clientId?.name || user?.name || 'Client',
+          customerEmail: b.clientId?.email || user?.email,
           paymentMethod: b.paymentMethod || 'mock',
           paymentStatus: b.paymentStatus || 'success',
           bookingDate: b.createdAt || new Date().toISOString(),
@@ -202,14 +207,42 @@ For support, contact: support@talentconnect.com
   }
 
   return (
-    <div style={{ padding: '40px 20px', maxWidth: '1200px', margin: '0 auto', minHeight: '60vh' }}>
-      {/* Page Header */}
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '36px', color: '#1f2937', marginBottom: '10px' }}>My Bookings</h1>
-        <p style={{ color: '#6b7280', fontSize: '16px' }}>View and manage all your talent service bookings</p>
-      </div>
+    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
+      {/* ── UNIFIED HERO HEADER ── */}
+      <section style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+        padding: '120px 24px 60px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        textAlign: 'center'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+            borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+            fontWeight: 700, marginBottom: '20px'
+          }}>
+            <span style={{ color: '#10b981' }}>●</span> Real-time Schedule & Order Tracking
+          </div>
+          <h1 style={{
+            color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+            fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em',
+            lineHeight: 1.2
+          }}>
+            My Bookings & Reservations
+          </h1>
+          <p style={{
+            color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            maxWidth: '700px', margin: '0 auto', lineHeight: 1.6
+          }}>
+            Track your upcoming events, download official booking receipts, and manage talent orders.
+          </p>
+        </div>
+      </section>
 
-      {/* Filter Tabs */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px 80px' }}>
+        {/* Filter Tabs */}
       <div style={{ 
         display: 'flex', 
         gap: '12px', 
@@ -527,6 +560,7 @@ For support, contact: support@talentconnect.com
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

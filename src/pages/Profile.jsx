@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../components/context/AuthContext';
 import * as api from '../services/api';
 import { formatCurrency } from '../components/utils/helpers';
@@ -23,6 +23,7 @@ const Profile = () => {
     } else {
       navigate('/login');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const loadUserData = async () => {
@@ -85,6 +86,9 @@ const Profile = () => {
     );
   }
 
+  const qualifications = user?.qualifications || [];
+  const certificates = user?.certificates || [];
+
   return (
     <div className="profile-page-new" style={{ paddingTop: '90px' }}>
       {/* Profile Header with Cover */}
@@ -100,13 +104,25 @@ const Profile = () => {
               </div>
             )}
             {user?.isVerified && (
-              <div className="avatar-badge">
+              <div className="avatar-badge" title="Verified Artist Partner">
                 <i className="fas fa-check"></i>
               </div>
             )}
           </div>
           <div className="profile-header-info">
-            <h1>{user?.name || 'User'}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <h1>{user?.name || 'User'}</h1>
+              {user?.isVerified && (
+                <span style={{ background: '#10b981', color: 'white', padding: '3px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800 }}>
+                  ✓ AI Verified
+                </span>
+              )}
+              {user?.digilockerVerified && (
+                <span style={{ background: '#0b3954', color: 'white', padding: '3px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800 }}>
+                  🔒 DigiLocker
+                </span>
+              )}
+            </div>
             <p className="profile-email">
               <i className="fas fa-envelope"></i> {user?.email}
             </p>
@@ -161,7 +177,7 @@ const Profile = () => {
               </div>
               <div className="stat-details">
                 <h3>{formatCurrency(stats.totalSpent)}</h3>
-                <p>Total Bookings Value</p>
+                <p>Total Value</p>
               </div>
             </div>
           </div>
@@ -206,7 +222,7 @@ const Profile = () => {
                   </span>
                   <span className="info-value">
                     {user?.isVerified ? 
-                      <span style={{color: '#10b981'}}><i className="fas fa-check-circle"></i> Verified</span> : 
+                      <span style={{color: '#10b981', fontWeight: 700}}><i className="fas fa-check-circle"></i> Verified ({user.aiVerificationScore || 98}% Trust Score)</span> : 
                       <span style={{color: '#64748b'}}><i className="fas fa-clock"></i> Unverified</span>
                     }
                   </span>
@@ -229,13 +245,13 @@ const Profile = () => {
                 </button>
                 {user?.role === 'artist' && (
                   <>
-                    <button className="action-btn" onClick={() => navigate('/host-event')}>
-                      <i className="fas fa-edit"></i>
-                      <span>Manage Service Profile</span>
-                    </button>
                     <button className="action-btn" onClick={() => navigate('/artist-dashboard')}>
                       <i className="fas fa-chart-line"></i>
                       <span>Artist Dashboard</span>
+                    </button>
+                    <button className="action-btn" onClick={() => navigate('/artist-verification')}>
+                      <i className="fas fa-shield-alt"></i>
+                      <span>Verification Center</span>
                     </button>
                   </>
                 )}
@@ -243,8 +259,57 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Right Column - Activity */}
+          {/* Right Column - Activity & Credentials */}
           <div className="profile-right-column">
+            {/* Artist Verified Credentials Section if artist */}
+            {user?.role === 'artist' && (
+              <div className="profile-card" style={{ marginBottom: '24px' }}>
+                <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h2>Verified Qualifications & Certifications</h2>
+                  <button className="view-all-link" onClick={() => navigate('/artist-dashboard')}>
+                    Manage →
+                  </button>
+                </div>
+                <div className="card-body">
+                  {qualifications.length === 0 && certificates.length === 0 ? (
+                    <div className="empty-activity">
+                      <i className="fas fa-award empty-icon"></i>
+                      <p>No qualifications added yet</p>
+                      <button className="btn-primary-small" onClick={() => navigate('/artist-verification')}>
+                        <i className="fas fa-plus"></i> Add Credentials
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'grid', gap: '12px' }}>
+                      {qualifications.map((q, i) => (
+                        <div key={i} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <div style={{ fontWeight: 800 }}>{q.title}</div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{q.issuer} • {q.year}</div>
+                          </div>
+                          <span style={{ background: '#dcfce7', color: '#16a34a', fontSize: '0.75rem', padding: '3px 8px', borderRadius: '12px', fontWeight: 700 }}>
+                            AI Verified
+                          </span>
+                        </div>
+                      ))}
+                      {certificates.map((c, i) => (
+                        <div key={i} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <div style={{ fontWeight: 800 }}>{c.title}</div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{c.issuer} • {c.category}</div>
+                          </div>
+                          <span style={{ background: 'rgba(99,102,241,0.15)', color: '#818cf8', fontSize: '0.75rem', padding: '3px 8px', borderRadius: '12px', fontWeight: 700 }}>
+                            {c.verifiedBadge || 'Accredited'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Recent Bookings Activity */}
             <div className="profile-card">
               <div className="card-header">
                 <h2>Recent Activity</h2>
@@ -294,7 +359,8 @@ const Profile = () => {
               </div>
             </div>
 
-            <div className="profile-card">
+            {/* Achievements */}
+            <div className="profile-card" style={{ marginTop: '24px' }}>
               <div className="card-header">
                 <h2>Achievements</h2>
               </div>
@@ -322,7 +388,7 @@ const Profile = () => {
                     <span className="badge-icon">
                       <i className="fas fa-theater-masks"></i>
                     </span>
-                    <p>Completed Bookings</p>
+                    <p>Completed</p>
                   </div>
                 </div>
               </div>

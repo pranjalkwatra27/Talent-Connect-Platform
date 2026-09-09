@@ -78,9 +78,39 @@ const ServiceSchema = new mongoose.Schema({
   },
   reviewsList: [ReviewSchema],
   packages: [PackageSchema],
+  qualifications: [
+    {
+      title: String,
+      issuer: String,
+      year: String,
+      docUrl: String,
+      isAiVerified: Boolean,
+      isDigiLockerVerified: Boolean,
+      score: Number,
+    }
+  ],
+  certificates: [
+    {
+      title: String,
+      category: String,
+      issuer: String,
+      credentialId: String,
+      fileUrl: String,
+      verifiedBadge: String,
+      aiConfidence: Number,
+    }
+  ],
   isVerified: {
     type: Boolean,
     default: false,
+  },
+  digilockerVerified: {
+    type: Boolean,
+    default: false,
+  },
+  aiVerificationScore: {
+    type: Number,
+    default: 0,
   },
   status: {
     type: String,

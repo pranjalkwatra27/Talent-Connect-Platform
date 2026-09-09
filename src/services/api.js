@@ -1,5 +1,6 @@
 // src/services/api.js — Communicates with Express + MongoDB backend
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+
 
 // Helper to get authorization headers
 const getHeaders = (contentType = 'application/json') => {
@@ -25,7 +26,7 @@ const handleResponse = async (response) => {
       const text = await response.text();
       data = { message: text || response.statusText };
     }
-  } catch (err) {
+  } catch {
     data = { message: response.statusText || 'Unable to parse server response' };
   }
   
@@ -253,4 +254,96 @@ export const upgradeToArtist = async () => {
   const updatedUser = { ...cachedUser, ...data };
   localStorage.setItem('user', JSON.stringify(updatedUser));
   return updatedUser;
+};
+
+// ============= AI & DIGILOCKER VERIFICATION =============
+
+export const aiVerifyDocument = async (docData) => {
+  const response = await safeFetch(`${API_BASE_URL}/users/ai-verify-document`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(docData),
+  });
+  const data = await handleResponse(response);
+  if (data.user) {
+    const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const updatedUser = { ...cachedUser, ...data.user };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  }
+  return data;
+};
+
+export const verifyWithDigiLocker = async (payload) => {
+  const response = await safeFetch(`${API_BASE_URL}/users/digilocker-verify`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await handleResponse(response);
+  if (data.user) {
+    const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const updatedUser = { ...cachedUser, ...data.user };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  }
+  return data;
+};
+
+// ============= QUALIFICATIONS & CERTIFICATES =============
+
+export const addQualification = async (qualData) => {
+  const response = await safeFetch(`${API_BASE_URL}/users/qualifications`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(qualData),
+  });
+  const data = await handleResponse(response);
+  if (data.user) {
+    const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const updatedUser = { ...cachedUser, ...data.user };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  }
+  return data;
+};
+
+export const deleteQualification = async (qualId) => {
+  const response = await safeFetch(`${API_BASE_URL}/users/qualifications/${qualId}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+  const data = await handleResponse(response);
+  if (data.user) {
+    const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const updatedUser = { ...cachedUser, ...data.user };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  }
+  return data;
+};
+
+export const addCertificate = async (certData) => {
+  const response = await safeFetch(`${API_BASE_URL}/users/certificates`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(certData),
+  });
+  const data = await handleResponse(response);
+  if (data.user) {
+    const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const updatedUser = { ...cachedUser, ...data.user };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  }
+  return data;
+};
+
+export const deleteCertificate = async (certId) => {
+  const response = await safeFetch(`${API_BASE_URL}/users/certificates/${certId}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+  const data = await handleResponse(response);
+  if (data.user) {
+    const cachedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const updatedUser = { ...cachedUser, ...data.user };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  }
+  return data;
 };

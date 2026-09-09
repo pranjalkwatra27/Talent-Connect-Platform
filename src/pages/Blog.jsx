@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+const base = import.meta.env.BASE_URL;
+
 const posts = [
   {
     id: 1,
@@ -10,7 +12,7 @@ const posts = [
     date: 'June 15, 2026',
     author: 'Priya Sharma',
     authorRole: 'Beauty Editor',
-    image: '/blog_makeup.jpg',
+    image: `${base}blog_makeup.jpg`,
     featured: true,
   },
   {
@@ -22,7 +24,7 @@ const posts = [
     date: 'June 10, 2026',
     author: 'Rahul Verma',
     authorRole: 'Photographer, 8 yrs',
-    image: '/blog_photography.jpg',
+    image: `${base}blog_photography.jpg`,
     featured: false,
   },
   {
@@ -34,7 +36,7 @@ const posts = [
     date: 'May 28, 2026',
     author: 'Anjali Patel',
     authorRole: 'Event Stylist',
-    image: '/blog_decor.jpg',
+    image: `${base}blog_decor.jpg`,
     featured: false,
   },
   {
@@ -46,7 +48,7 @@ const posts = [
     date: 'May 20, 2026',
     author: 'Vikram Singh',
     authorRole: 'DJ & Music Producer',
-    image: '/blog_dj.jpg',
+    image: `${base}blog_dj.jpg`,
     featured: false,
   },
   {
@@ -58,7 +60,7 @@ const posts = [
     date: 'May 15, 2026',
     author: 'Deepika Rao',
     authorRole: 'Mehndi Artist, 6 yrs',
-    image: '/blog_mehndi.jpg',
+    image: `${base}blog_mehndi.jpg`,
     featured: false,
   },
 ];
@@ -79,22 +81,48 @@ const Blog = () => {
   const rest = posts.filter(p => !p.featured && (active === 'All' || p.category === active));
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
 
-      {/* ── TOP NAV-STYLE HEADER ── */}
-      <div style={{ background: 'var(--card-bg)', borderBottom: '1px solid var(--border)', padding: '24px', textAlign: 'center' }}>
-        <p style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '0.82rem', letterSpacing: '2px', marginBottom: '6px' }}>THE TALENTCONNECT BLOG</p>
-        <h1 style={{ color: 'var(--text)', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800 }}>Stories, Tips & Inspiration</h1>
-        <p style={{ color: 'var(--text-muted)', marginTop: '8px', fontSize: '1rem' }}>Real advice from real event professionals across India.</p>
-      </div>
+      {/* ── UNIFIED HERO HEADER ── */}
+      <section style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+        padding: '120px 24px 60px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        textAlign: 'center'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+            borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+            fontWeight: 700, marginBottom: '20px'
+          }}>
+            <span style={{ color: '#ec4899' }}>●</span> TalentConnect Editorial & Insights
+          </div>
+          <h1 style={{
+            color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+            fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em',
+            lineHeight: 1.2
+          }}>
+            Stories, Tips & Inspiration
+          </h1>
+          <p style={{
+            color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            maxWidth: '700px', margin: '0 auto', lineHeight: 1.6
+          }}>
+            Real advice, trend forecasts, and expert guides from top event professionals across India.
+          </p>
+        </div>
+      </section>
 
       {/* ── FEATURED POST ── */}
       {featured && (
-        <div style={{ maxWidth: '1100px', margin: '48px auto 0', padding: '0 24px' }}>
+        <div style={{ maxWidth: '1200px', margin: '48px auto 0', padding: '0 24px' }}>
           <div style={{
             display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            borderRadius: '24px', overflow: 'hidden', border: '1px solid var(--border)',
-            background: 'var(--card-bg)'
+            borderRadius: '24px', overflow: 'hidden', border: '1px solid #e2e8f0',
+            background: '#ffffff', boxShadow: '0 4px 20px rgba(0,0,0,0.04)'
           }}>
             <img src={featured.image} alt={featured.title}
               style={{ width: '100%', height: '360px', objectFit: 'cover' }} />

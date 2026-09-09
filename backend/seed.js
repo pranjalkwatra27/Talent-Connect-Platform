@@ -341,6 +341,28 @@ async function seed() {
     // Seed Artists and their Services
     console.log('Seeding artist accounts and service listings...');
     for (const art of artistsData) {
+      const sampleQuals = [
+        {
+          title: `Certified Professional in ${art.service.category}`,
+          issuer: 'National Academy of Performing & Creative Arts',
+          year: '2022',
+          isAiVerified: true,
+          isDigiLockerVerified: true,
+          score: 98,
+        }
+      ];
+
+      const sampleCerts = [
+        {
+          title: `Masterclass Excellence in ${art.service.category}`,
+          category: 'Professional Talent Skill',
+          issuer: 'Skill India / NSDC Certified Guild',
+          credentialId: `NSDC-${Math.floor(100000 + Math.random() * 900000)}`,
+          verifiedBadge: 'DigiLocker & AI Verified',
+          aiConfidence: 99,
+        }
+      ];
+
       // 1. Create artist user
       const artistUser = await User.create({
         name: art.name,
@@ -350,7 +372,15 @@ async function seed() {
         city: art.city,
         phone: art.phone,
         avatar: art.avatar,
-        isVerified: true
+        isVerified: true,
+        emailVerified: true,
+        phoneVerified: true,
+        docVerified: true,
+        paymentComplete: true,
+        digilockerVerified: true,
+        aiVerificationScore: 98,
+        qualifications: sampleQuals,
+        certificates: sampleCerts,
       });
 
       // 2. Create service listing referencing artistId
@@ -367,6 +397,10 @@ async function seed() {
         reviewsCount: art.service.reviewsCount,
         packages: art.service.packages,
         isVerified: true,
+        digilockerVerified: true,
+        aiVerificationScore: 98,
+        qualifications: sampleQuals,
+        certificates: sampleCerts,
         status: 'active',
         // pre-populate with some sample reviews
         reviewsList: [

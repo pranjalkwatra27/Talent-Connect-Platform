@@ -38,29 +38,40 @@ const Press = () => {
   ];
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
 
-      {/* ── HERO with office image ── */}
-      <div style={{ position: 'relative', height: '440px', overflow: 'hidden' }}>
-        <img src="/press_office.jpg" alt="TalentConnect office"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(to right, rgba(5,5,25,0.88) 50%, rgba(5,5,25,0.4) 100%)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '40px 60px'
-        }}>
-          <span style={{
-            display: 'inline-block', color: '#94a3b8', fontWeight: 700,
-            fontSize: '0.78rem', letterSpacing: '2.5px', marginBottom: '14px'
-          }}>MEDIA & PRESS</span>
-          <h1 style={{ color: 'white', fontSize: 'clamp(2rem, 4.5vw, 3.2rem)', fontWeight: 800, lineHeight: 1.2, maxWidth: '520px', marginBottom: '18px' }}>
-            TalentConnect in the news
+      {/* ── UNIFIED HERO HEADER ── */}
+      <section style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+        padding: '120px 24px 60px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        textAlign: 'center'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.2)', padding: '6px 18px',
+            borderRadius: '30px', color: '#e2e8f0', fontSize: '0.85rem',
+            fontWeight: 700, marginBottom: '20px'
+          }}>
+            <span style={{ color: '#38bdf8' }}>●</span> Media, News & Press Releases
+          </div>
+          <h1 style={{
+            color: 'white', fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
+            fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.02em',
+            lineHeight: 1.2
+          }}>
+            TalentConnect in the News
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: '1rem', maxWidth: '480px', lineHeight: 1.7 }}>
-            Official information, brand assets, and media contacts for journalists and content creators.
+          <p style={{
+            color: '#cbd5e1', fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+            maxWidth: '700px', margin: '0 auto', lineHeight: 1.6
+          }}>
+            Official brand stories, industry milestones, and media kit resources for journalists and creators.
           </p>
         </div>
-      </div>
+      </section>
 
       {/* ── NUMBERS ── */}
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '56px 24px 0' }}>
